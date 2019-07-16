@@ -3,6 +3,9 @@ USER_APP_NAME = 'Pan-Athapaskan Comparative Lexicon'
 USER_EMAIL_SENDER_NAME = 'Nathan Taylor'
 USER_EMAIL_SENDER_EMAIL = 'nbtaylor@gmail.com'
 
+SQLALCHEMY_DATABASE_URI = 'sqlite:///../app.sqlite' # probably shouldn't live here???
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+
 # Flask-User settings
 USER_ENABLE_CHANGE_PASSWORD = True  # Allow users to change their password
 USER_ENABLE_CHANGE_USERNAME = False  # Allow users to change their username

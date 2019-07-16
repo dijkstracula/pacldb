@@ -2,16 +2,23 @@ import os
 
 from flask import Flask
 from flask_user import UserManager
+from flask_migrate import Migrate, MigrateCommand
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CSRFProtect
 
+
+csrf_protect = CSRFProtect()
 db = SQLAlchemy()
+migrate = Migrate()
+
+from app import models
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-        SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
+        SECRET_KEY= os.environ.get('SECRET_KEY') or 'dev',
+        DATABASE=os.path.join(app.instance_path, 'pacldb.sqlite'),
     )
 
     if test_config is None:
@@ -21,7 +28,7 @@ def create_app(test_config=None):
         # load the test config if passed in
         app.config.from_mapping(test_config)
 
-    app.config.from_object('app.local_settings')
+    app.config.from_object('app.settings')
 
     # ensure the instance folder exists
     try:
@@ -29,14 +36,18 @@ def create_app(test_config=None):
     except OSError:
         pass
 
+
     # Setup DB
-    #db.create_all()
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()
+        migrate.init_app(app, db)
+
+    #CSRF
+    csrf_protect.init_app(app)
 
     # Setup Flask-User to handle user account related forms
-    from .models.user_models import User
-
-    user_manager = UserManager(app, db, User)
-
+    user_manager = UserManager(app, db, models.User)
 
     from .views import register_blueprints
     register_blueprints(app)
