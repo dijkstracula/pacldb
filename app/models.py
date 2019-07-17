@@ -4,33 +4,31 @@ from app import db
 
 class Concept(db.Model):
     __tablename__ = 'concepts'
-    id = db.Column(db.Integer, primary_key=True)
-    domain = db.Column(db.String(128), nullable=False, index=True, unique=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(128), nullable=False, index=True)
+    domain = db.Column(db.String(128), nullable=False, index=True)
 
-    # One concept has many terms
     terms = db.relationship("Term", lazy="dynamic")
 
     def __repr__(self):
-        return '<Concept {}>'.format(self.domain)
-
+        return '<Concept {} {}>'.format(self.name, self.domain)
 
 class Gloss(db.Model):
     __tablename__ = 'glosses'
-    id = db.Column(db.Integer, primary_key=True)
-    source = db.Column(db.String(128), nullable=False, index=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    gloss = db.Column(db.String(256), nullable=False)
+    source = db.Column(db.String(256), nullable=False, index=True)
     page = db.Column(db.Integer)
 
-    def __repr__(self):
-        return '<Gloss {}:{}>'.format(self.source, self.page)
-
+    term_id = db.Column(db.Integer, db.ForeignKey('terms.id'), nullable=False)
 
 class Term(db.Model):
     __tablename__ = 'terms'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     text = db.Column(db.String(128), nullable=False, index=True, unique=True)
-    morph_type = db.Column(db.String(16))
-    # One term has many glosses
-    glosses = db.relationship("Gloss", lazy="dynamic")
+    morph_type = db.Column(db.String(16), nullable=False)
+
+    concept_id = db.Column(db.Integer, db.ForeignKey('concepts.id'), nullable=False)
 
     def __repr__(self):
         return '<Term {}>'.format(self.text)

@@ -3,7 +3,7 @@ USER_APP_NAME = 'Pan-Athapaskan Comparative Lexicon'
 USER_EMAIL_SENDER_NAME = 'Nathan Taylor'
 USER_EMAIL_SENDER_EMAIL = 'nbtaylor@gmail.com'
 
-SQLALCHEMY_DATABASE_URI = 'sqlite:///../app.sqlite' # probably shouldn't live here???
+SQLALCHEMY_DATABASE_URI = 'sqlite:///pacl.sqlite' # probably shouldn't live here???
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Flask-User settings
