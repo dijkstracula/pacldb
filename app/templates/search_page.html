@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% from "macros.html" import render_field, render_submit_field %}
+
+{% block content %}
+<form action="" method="POST" class="form" role="form">
+	<row>
+    {{ form.hidden_tag() }}
+	<div class="col-5">
+		{{ render_field(form.concept)  }}
+	</div>
+	<div class="col-5">
+		{{ render_field(form.term)  }}
+	</div>
+	</row>
+
+	<row>{{ render_submit_field(form.submit) }}</row>
+</form>
+{% endblock %}
