@@ -49,7 +49,7 @@ def create_app(test_config=None):
     # Setup Flask-User to handle user account related forms
     user_manager = UserManager(app, db, models.User)
 
-    from .views import register_blueprints
+    from .routes import register_blueprints
     register_blueprints(app)
 
     @app.context_processor
