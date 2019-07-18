@@ -22,6 +22,19 @@ $ flask db init
 $ flask db upgrade
 ```
 
+This should generate a file in the root application directory called
+`pacl.sqlite`.  If you have some CSV files that have been exported from
+the original Excel dataset, you can import them with the `csvmigrate.py`
+script.
+
+```
+scripts/csvmigrate.py pacl.sqlite \
+    ~/Downloads/FLORA.csv ~/Downloads/TOOL.csv ...
+```
+
+That script needs CSV files with certain headers.  See the docstring
+in `scripts/csvmigrate.py` for details.
+
 ## Running locally 
 
 ```
