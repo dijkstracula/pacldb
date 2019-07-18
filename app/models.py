@@ -8,8 +8,6 @@ class Concept(db.Model):
     name = db.Column(db.String(128), nullable=False, index=True)
     domain = db.Column(db.String(128), nullable=False, index=True)
 
-    terms = db.relationship("Term", lazy="dynamic")
-
     def __repr__(self):
         return '<Concept {} {}>'.format(self.name, self.domain)
 
@@ -22,11 +20,17 @@ class Gloss(db.Model):
 
     term_id = db.Column(db.Integer, db.ForeignKey('terms.id'), nullable=False)
 
+    def __repr__(self):
+        return '<Gloss {}>'.format(self.gloss)
+
 class Term(db.Model):
     __tablename__ = 'terms'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     text = db.Column(db.String(128), nullable=False, index=True, unique=True)
     morph_type = db.Column(db.String(16), nullable=False)
+
+    glosses = db.relationship("Gloss", backref="term", lazy=True)
+    concept = db.relationship("Concept", lazy=True)
 
     concept_id = db.Column(db.Integer, db.ForeignKey('concepts.id'), nullable=False)
 

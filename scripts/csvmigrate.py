@@ -96,7 +96,7 @@ class Migrator:
         if concept and typ and term:
             self.process_concept(concept, typ)
             self.process_term(term,morph_type,concept,typ)
-            for gloss in re.split("[,;]\s*", glosses):
+            for gloss in set(re.split("[,;]\s*", glosses)):
                 self.process_gloss(term, gloss, bib_src, pgn)
 
     def process_file(self, filename):

@@ -1,9 +1,14 @@
+import os
+basedir = os.path.abspath(os.path.dirname(__file__))
+
 # Flask-User settings
 USER_APP_NAME = 'Pan-Athapaskan Comparative Lexicon'
 USER_EMAIL_SENDER_NAME = 'Nathan Taylor'
 USER_EMAIL_SENDER_EMAIL = 'nbtaylor@gmail.com'
 
-SQLALCHEMY_DATABASE_URI = 'sqlite:///pacl.sqlite' # probably shouldn't live here???
+SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+        'sqlite:///' + os.path.join(basedir, '../pacl.sqlite')
+
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Flask-User settings
