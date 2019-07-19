@@ -44,7 +44,7 @@ class Migrator:
         c.execute('DELETE FROM concepts')
         c.execute('DELETE FROM terms')
         c.execute('DELETE FROM glosses')
-        c.execute('DELETE FROM glosses')
+        c.execute('DELETE FROM languages')
 
     def process_language(self, name, geocode):
         c = self.conn.cursor()

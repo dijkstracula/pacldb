@@ -40,6 +40,7 @@ class Term(db.Model):
 
     glosses = db.relationship("Gloss", backref="term", lazy=True)
     concept = db.relationship("Concept", lazy=True)
+    language = db.relationship("Language", lazy=True)
 
     concept_id = db.Column(db.Integer, db.ForeignKey('concepts.id'), nullable=False)
 

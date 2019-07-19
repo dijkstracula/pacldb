@@ -4,7 +4,7 @@ from flask_user import current_user
 from sqlalchemy import asc, func
 
 from app import forms
-from app.models import Concept, Gloss, Term
+from app.models import Concept, Gloss, Language, Term
 
 from collections import defaultdict
 
@@ -23,7 +23,7 @@ def search_page():
     page = request.args.get('page', 1, type=int)
     form = forms.SearchForm(request.form, obj=current_user)
 
-    query = Term.query.join(Concept).order_by(asc(func.lower(Concept.name)))
+    query = Term.query.join(Concept).join(Language).order_by(asc(func.lower(Concept.name)))
 
     kwargs = {}
 

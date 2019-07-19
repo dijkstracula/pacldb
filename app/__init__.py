@@ -11,7 +11,7 @@ csrf_protect = CSRFProtect()
 db = SQLAlchemy()
 migrate = Migrate()
 
-from app.models import Concept, Gloss, Term, User
+from app.models import Concept, Gloss, Language, Term, User
 
 def create_app(test_config=None):
     # create and configure the app
