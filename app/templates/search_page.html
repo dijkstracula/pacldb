@@ -1,20 +1,21 @@
 {% extends "layout.html" %}
 
-{% from "macros.html" import render_field, render_submit_field %}
+{% from "macros.html" import render_field, render_submit_field, render_prev_next %}
 
 {% block content %}
 <form action="" method="POST" class="form" role="form">
     {{ form.hidden_tag() }}
     <div class="form-inline">
-		{{ render_field(form.concept)  }}
-		{{ render_field(form.term)  }}
-		{{ render_field(form.gloss)  }}
-    	{{ render_submit_field(form.submit) }}
+        {{ render_field(form.concept)  }}
+        {{ render_field(form.term)  }}
+        {{ render_field(form.gloss)  }}
+        {{ render_submit_field(form.submit) }}
     </div>
 </form>
 
 <hr class="no-margins"/>
 
+{{ render_prev_next(prev_url, next_url) }}
 <table class="table table-striped">
     <thead>
         <tr>
@@ -25,19 +26,22 @@
         </tr>
     </thead>
     <tbody>
-    {% for result in results.items %}
+        {% for result in results.items %}
         <tr>
             <td>{{result.concept.domain}}</td>
             <td>{{result.concept.name}}</td>
             <td>{{result.text}}</td>
             <td>
                 {% for gloss in result.glosses %}
-                [<a href="#" data-toggle="tooltip" title='{{ gloss.source}}'>{{gloss.gloss}}</a>]
+                [<a href="#" data-toggle="tooltip" title='{{ gloss.source}} page {{ gloss.page  }}'>{{gloss.gloss}}</a>]
                 {%endfor %}
             </td>
         </tr>
-    {% endfor %}
+        {% endfor %}
     </tbody>
+
 </table>
+
+{{ render_prev_next(prev_url, next_url) }}
 
 {% endblock %}

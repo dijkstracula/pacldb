@@ -28,8 +28,14 @@ the original Excel dataset, you can import them with the `csvmigrate.py`
 script.
 
 ```
-scripts/csvmigrate.py pacl.sqlite \
-    ~/Downloads/FLORA.csv ~/Downloads/TOOL.csv ...
+$ scripts/csvmigrate.py pacl.sqlite \
+    ~/Downloads/FLORA.csv ~/Downloads/TOOL.csv
+
+Processing /Users/ntaylor/Downloads/FLORA.csv...
+Processing /Users/ntaylor/Downloads/TOOL.csv...
+All done!
+Processed 23139 entries in 35.06 seconds
+$ 
 ```
 
 That script needs CSV files with certain headers.  See the docstring

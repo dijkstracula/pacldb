@@ -10,6 +10,7 @@ SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, '../pacl.sqlite')
 
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+SQLALCHEMY_ECHO = True
 
 # Flask-User settings
 USER_ENABLE_CHANGE_PASSWORD = True  # Allow users to change their password
@@ -24,5 +25,5 @@ USER_ENABLE_USERNAME = False  # Register and Login with username
 #USER_AFTER_LOGOUT_ENDPOINT = 'main.home_page'
 
 ADMINS = [
-    '"Admin One" <admin1@gmail.com>',
+    '"Nathan Taylor" <nbtaylor@gmail.com>',
 ]

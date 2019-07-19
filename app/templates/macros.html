@@ -22,3 +22,17 @@
     <button type="submit" class="btn btn-primary">{{label}}</button>
 {%- endmacro %}
 
+{% macro render_prev_next(prev_url, next_url) -%}
+<div class="row justify-content-between">
+    <div class="col-4">
+        {% if prev_url %}
+        <a href="{{prev_url}}">Prev</a>
+        {% endif %}
+    </div>
+    <div class="col-4">
+        {% if next_url %}
+        <a href="{{next_url}}">Next</a>
+        {% endif %}
+    </div>
+</div>
+{%- endmacro %}

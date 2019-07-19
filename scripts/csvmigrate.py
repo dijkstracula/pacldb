@@ -43,6 +43,7 @@ class Migrator:
         c = self.conn.cursor()
         c.execute('DELETE FROM concepts')
         c.execute('DELETE FROM terms')
+        c.execute('DELETE FROM glosses')
 
     def process_concept(self, name, domain):
         c = self.conn.cursor()
@@ -83,12 +84,12 @@ class Migrator:
             typ = row["TYPE"]
             morph_type = row["Morphological Type: N, N-N, N-N-N, N-P, NMLZ, PRED, N-QUAL, In"]
             #geo = row["GEO CODE"]
-            lang = row["Language"]
-            concept = row["Concept"]
-            term = row["Original Term"]
-            glosses = row["Original Gloss"] # comma separated
-            bib_src = row["Bib-Source"]
-            pgn = row["Page number"]
+            lang = row["Language"].strip()
+            concept = row["Concept"].strip()
+            term = row["Original Term"].strip()
+            glosses = row["Original Gloss"].strip() # comma separated
+            bib_src = row["Bib-Source"].strip()
+            pgn = row["Page number"].strip()
         except KeyError as e:
             print(e)
             pass
@@ -113,10 +114,11 @@ def main():
     m = Migrator(sys.argv[1])
     b = time.time()
     for fn in sys.argv[2:]:
-        print(fn)
+        print("Processing " + fn + "...")
         m.process_file(fn)
     e = time.time()
 
+    print("All done!")
     print("Processed {} entries in {:4.2f} seconds".format(m.rows_processed, (e-b)))
 
     m.conn.close()
