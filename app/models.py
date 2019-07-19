@@ -5,7 +5,7 @@ from app import db
 class Language(db.Model):
     __tablename__ = 'languages'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(128))
+    name = db.Column(db.String(128), unique=True)
     geocode = db.Column(db.String(8), unique=True)
 
     def __repr__(self):
@@ -14,7 +14,7 @@ class Language(db.Model):
 class Concept(db.Model):
     __tablename__ = 'concepts'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(128), nullable=False, index=True)
+    name = db.Column(db.String(128), nullable=False, index=True, unique=True)
     domain = db.Column(db.String(128), nullable=False, index=True)
 
     def __repr__(self):

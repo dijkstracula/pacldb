@@ -23,7 +23,7 @@ def search_page():
     page = request.args.get('page', 1, type=int)
     form = forms.SearchForm(request.form, obj=current_user)
 
-    query = Term.query.join(Concept).join(Language).order_by(asc(func.lower(Concept.name)))
+    query = Term.query.join(Concept).join(Language).join(Gloss).order_by(asc(func.lower(Concept.name)))
 
     kwargs = {}
 
@@ -33,9 +33,9 @@ def search_page():
         kwargs['gloss_query'] = form.gloss.data
         return redirect(url_for('main.search_page', **kwargs))
     else:
-        kwargs['concept_query'] = request.args.get('concept_query') or ""
-        kwargs['term_query'] = request.args.get('term_query') or ""
-        kwargs['gloss_query'] = request.args.get('gloss_query') or ""
+        form.concept.data = kwargs['concept_query'] = request.args.get('concept_query') or ""
+        form.concept.term = kwargs['term_query'] = request.args.get('term_query') or ""
+        form.concept.gloss = kwargs['gloss_query'] = request.args.get('gloss_query') or ""
 
 
     if kwargs['concept_query']:

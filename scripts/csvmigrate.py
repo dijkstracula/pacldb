@@ -48,7 +48,9 @@ class Migrator:
 
     def process_language(self, name, geocode):
         c = self.conn.cursor()
-        c.execute('SELECT * FROM languages WHERE name=? AND geocode=?', (name, geocode))
+
+        # Use OR here because some languages don't have geocodes and vice versa
+        c.execute('SELECT * FROM languages WHERE name=? OR geocode=?', (name, geocode))
         if len(c.fetchall()) > 0:
             return # Already exists.
         c.execute('INSERT INTO languages(name, geocode) VALUES (?,?)', (name, geocode))
@@ -83,8 +85,13 @@ class Migrator:
 
     def process_gloss(self, text, gloss, bib_src, page):
         c = self.conn.cursor()
+
         c.execute('SELECT id FROM terms WHERE text=?', (text,))
         tid = c.fetchone()[0]
+
+        c.execute('SELECT * FROM glosses WHERE gloss=? AND source=? AND page=?', (gloss,bib_src, page))
+        if len(c.fetchall()) > 0:
+            return # Already exists.
 
         c.execute('INSERT INTO glosses(gloss, source, page, term_id) VALUES (?,?,?,?)', (gloss, bib_src, page, tid))
         self.rows_processed += 1
