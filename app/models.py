@@ -2,6 +2,15 @@ from datetime import datetime
 from flask_user import UserMixin
 from app import db
 
+class Language(db.Model):
+    __tablename__ = 'languages'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(128))
+    geocode = db.Column(db.String(8), unique=True)
+
+    def __repr__(self):
+        return '<Language {} {}>'.format(self.name, self.geocode)
+
 class Concept(db.Model):
     __tablename__ = 'concepts'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -33,6 +42,9 @@ class Term(db.Model):
     concept = db.relationship("Concept", lazy=True)
 
     concept_id = db.Column(db.Integer, db.ForeignKey('concepts.id'), nullable=False)
+
+    # Some are missing languages, so make nullable.
+    language_id = db.Column(db.Integer, db.ForeignKey('languages.id'))
 
     def __repr__(self):
         return '<Term {}>'.format(self.text)

@@ -44,6 +44,15 @@ class Migrator:
         c.execute('DELETE FROM concepts')
         c.execute('DELETE FROM terms')
         c.execute('DELETE FROM glosses')
+        c.execute('DELETE FROM glosses')
+
+    def process_language(self, name, geocode):
+        c = self.conn.cursor()
+        c.execute('SELECT * FROM languages WHERE name=? AND geocode=?', (name, geocode))
+        if len(c.fetchall()) > 0:
+            return # Already exists.
+        c.execute('INSERT INTO languages(name, geocode) VALUES (?,?)', (name, geocode))
+        self.rows_processed += 1
 
     def process_concept(self, name, domain):
         c = self.conn.cursor()
@@ -52,21 +61,25 @@ class Migrator:
             return # Already exists.
 
         c.execute('INSERT INTO concepts(name, domain) VALUES (?,?)', (name, domain))
-        self.conn.commit()
         self.rows_processed += 1
 
-    def process_term(self, text, morph_type, cname, domain):
+    def process_term(self, text, morph_type, cname, domain, geo):
         c = self.conn.cursor()
         c.execute('SELECT id FROM concepts WHERE name=? AND domain=?', (cname, domain))
         cid = c.fetchone()[0]
+
+        if geo:
+            c.execute('SELECT id FROM languages WHERE geocode=?', (geo,))
+            lid = c.fetchone()[0]
+        else:
+            lid = None
 
         c.execute('SELECT * FROM terms WHERE text = ?', (text,))
         if len(c.fetchall()) > 0:
             return # Already exists.
 
-        c.execute('INSERT INTO terms(text, morph_type, concept_id) VALUES (?,?,?)', (text, morph_type, cid))
+        c.execute('INSERT INTO terms(text, morph_type, concept_id, language_id) VALUES (?,?,?,?)', (text, morph_type, cid, lid))
         self.rows_processed += 1
-        self.conn.commit()
 
     def process_gloss(self, text, gloss, bib_src, page):
         c = self.conn.cursor()
@@ -74,29 +87,24 @@ class Migrator:
         tid = c.fetchone()[0]
 
         c.execute('INSERT INTO glosses(gloss, source, page, term_id) VALUES (?,?,?,?)', (gloss, bib_src, page, tid))
-        self.conn.commit()
         self.rows_processed += 1
 
 
     def process_row(self, row):
-        typ = geo = lang = concept = term = gloss= bib_src = pgn = None
-        try:
-            typ = row["TYPE"]
-            morph_type = row["Morphological Type: N, N-N, N-N-N, N-P, NMLZ, PRED, N-QUAL, In"]
-            #geo = row["GEO CODE"]
-            lang = row["Language"].strip()
-            concept = row["Concept"].strip()
-            term = row["Original Term"].strip()
-            glosses = row["Original Gloss"].strip() # comma separated
-            bib_src = row["Bib-Source"].strip()
-            pgn = row["Page number"].strip()
-        except KeyError as e:
-            print(e)
-            pass
+        typ = row.get("TYPE")
+        morph_type = row["Morphological Type: N, N-N, N-N-N, N-P, NMLZ, PRED, N-QUAL, In"]
+        geo = row.get("GEO CODE")
+        lang = row.get("Language").strip()
+        concept = row.get("Concept").strip()
+        term = row.get("Original Term").strip()
+        glosses = row.get("Original Gloss").strip() # comma separated
+        bib_src = row.get("Bib-Source").strip()
+        pgn = row.get("Page number").strip()
 
         if concept and typ and term:
+            self.process_language(lang, geo)
             self.process_concept(concept, typ)
-            self.process_term(term,morph_type,concept,typ)
+            self.process_term(term,morph_type,concept,typ, geo)
             for gloss in set(re.split("[,;]\s*", glosses)):
                 self.process_gloss(term, gloss, bib_src, pgn)
 
@@ -116,6 +124,7 @@ def main():
     for fn in sys.argv[2:]:
         print("Processing " + fn + "...")
         m.process_file(fn)
+        m.conn.commit()
     e = time.time()
 
     print("All done!")

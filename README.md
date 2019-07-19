@@ -34,7 +34,7 @@ $ scripts/csvmigrate.py pacl.sqlite \
 Processing /Users/ntaylor/Downloads/FLORA.csv...
 Processing /Users/ntaylor/Downloads/TOOL.csv...
 All done!
-Processed 23139 entries in 35.06 seconds
+Processed 23132 entries in 1.17 seconds
 $ 
 ```
 
