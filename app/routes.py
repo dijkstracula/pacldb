@@ -56,4 +56,5 @@ def search_page():
     kwargs['prev_url'] = url_for('main.search_page', page=results.prev_num, **kwargs) \
         if results.has_prev else None
 
+    kwargs['languages'] = Language.query.order_by(Language.name).all()
     return render_template('search_page.html', form=form, results=results, **kwargs)
