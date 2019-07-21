@@ -49,10 +49,18 @@ class Migrator:
     def process_language(self, name, geocode):
         c = self.conn.cursor()
 
+        c.execute('SELECT * FROM languages WHERE name=? and geocode <>? OR name<>? and geocode=?', (name,geocode,name,geocode))
+        res = c.fetchall()
+        if len(res) > 0:
+            print("Multiple geo results ({}, {})".format(name, geocode), str(res))
+            return
+
         # Use OR here because some languages don't have geocodes and vice versa
-        c.execute('SELECT * FROM languages WHERE name=? OR geocode=?', (name, geocode))
-        if len(c.fetchall()) > 0:
+        res = c.execute('SELECT * FROM languages WHERE name=? or geocode=?', (name,geocode))
+        res = c.fetchall()
+        if len(res) > 0:
             return # Already exists.
+
         c.execute('INSERT INTO languages(name, geocode) VALUES (?,?)', (name, geocode))
         self.rows_processed += 1
 
@@ -74,7 +82,7 @@ class Migrator:
             c.execute('SELECT id FROM languages WHERE geocode=?', (geo,))
             lid = c.fetchone()[0]
         else:
-            lid = None
+            lid = ""
 
         c.execute('SELECT * FROM terms WHERE text = ?', (text,))
         if len(c.fetchall()) > 0:
@@ -99,7 +107,7 @@ class Migrator:
 
     def process_row(self, row):
         typ = row.get("TYPE")
-        morph_type = row["Morphological Type: N, N-N, N-N-N, N-P, NMLZ, PRED, N-QUAL, In"]
+        morph_type = "" #row.get("Morphological Type: N, N-N, N-N-N, N-P, NMLZ, PRED, N-QUAL, In").strip() or row.get("Morphological type") or ""
         geo = row.get("GEO CODE")
         lang = row.get("Language").strip()
         concept = row.get("Concept").strip()

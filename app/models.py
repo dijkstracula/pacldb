@@ -14,7 +14,7 @@ class Language(db.Model):
 class Concept(db.Model):
     __tablename__ = 'concepts'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(128), nullable=False, index=True, unique=True)
+    name = db.Column(db.String(128), nullable=False, index=True)
     domain = db.Column(db.String(128), nullable=False, index=True)
 
     def __repr__(self):

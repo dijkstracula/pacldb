@@ -14,6 +14,7 @@
             <th scope="col">Domain</th>
             <th scope="col">Concept</th>
             <th scope="col">Term</th>
+            <th scope="col">Morph</th>
             <th scope="col">Language</th>
             <th scope="col">Glosses</th>
         </tr>
@@ -32,6 +33,9 @@
                 </td>
                 <td>
                     {{ form.term(placeholder="search")  }}
+                </td>
+                <td>
+                    TODO
                 </td>
                 <td>
                     <select class="form-control" id="exampleFormControlSelect1">
@@ -55,6 +59,7 @@
             <td>{{result.concept.domain}}</td>
             <td>{{result.concept.name}}</td>
             <td>{{result.text}}</td>
+            <td>{{result.morph_type}}</td>
             <td>{{result.language.name}}</td>
             <td>
                 {% for gloss in result.glosses %}
