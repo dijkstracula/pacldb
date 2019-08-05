@@ -23,37 +23,38 @@ def search_page():
     page = request.args.get('page', 1, type=int)
     form = forms.SearchForm(request.form, obj=current_user)
 
-    query = Term.query.join(Concept).join(Language).join(Gloss).order_by(asc(func.lower(Concept.name)))
-
-    query_state = {}
-
     if form.validate_on_submit():
-        query_state['concept'] = form.concept.data
-        query_state['term'] = form.term.data
-        query_state['gloss'] = form.gloss.data
-        return redirect(url_for('main.search_page', **query_state))
-    else:
-        form.concept.data = query_state['concept'] = request.args.get('concept') or ""
-        form.term.data = query_state['term'] = request.args.get('term') or ""
-        form.gloss.data = query_state['gloss'] = request.args.get('gloss') or ""
+        return redirect(url_for('main.search_page',
+            concept=form.concept.data,
+            term=form.term.data,
+            gloss=form.gloss.data))
 
-    if query_state['concept'] != "":
-        query = query.filter(Concept.name.like(query_state['concept'].strip()))
-    if query_state['term'] != "":
-        query = query.filter(Term.text.like(query_state['term'].strip()))
-    if query_state['gloss'] != "":
-        query = query.filter(Gloss.gloss.like(query_state['gloss'].strip()))
+    concept = request.args.get('concept')
+    term = request.args.get('term')
+    gloss = request.args.get('gloss')
+
+    query = Term.query.join(Concept).join(Language).join(Gloss).order_by(asc(func.lower(Concept.name)))
+    if concept:
+        query = query.filter(Concept.name.like(concept.strip()))
+    if term:
+        query = query.filter(Term.text.like(term.strip()))
+    if gloss:
+        query = query.filter(Gloss.gloss.like(gloss.strip()))
 
     results = query.paginate(page, 25, False)
 
     pagination_state = {}
     pagination_state["next_url"] = url_for('main.search_page',
             page=results.next_num,
-            **query_state) \
+            concept=concept,
+            term=term,
+            gloss=term) \
         if results.has_next else None
     pagination_state["prev_url"] = url_for('main.search_page',
             page=results.prev_num,
-            **query_state) \
+            concept=concept,
+            term=term,
+            gloss=gloss) \
         if results.has_prev else None
 
     pagination_state['total_cnt'] = query.count()
@@ -63,11 +64,7 @@ def search_page():
     pagination_state['page'] = page
     pagination_state['pages'] = int((pagination_state['total_cnt'] / 25) + 1)
 
-    languages = Language.query.order_by(Language.name).all()
-
     return render_template('search_page.html',
             form=form,
             results=results,
-            query_state=query_state,
-            pagination_state=pagination_state,
-            languages=languages)
+            pagination_state=pagination_state)

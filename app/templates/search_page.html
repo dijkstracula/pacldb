@@ -39,8 +39,8 @@
                 <td>
                     <select class="form-control" id="exampleFormControlSelect1">
                         <option value>--any--</option>
-                        {% for language in languages %}
-                        <option value>{{language.name}}</option>
+                        {% for name in ["temp", "foo"] %}
+                        <option value>{{name}}</option>
                         {% endfor %}
                     </select>
                 </td>
@@ -81,12 +81,12 @@
                 <li class="page-item {% if not pagination_state.prev_url %}disabled{% endif %}">
                   <a class="page-link" href="{{pagination_state.prev_url}}" tabindex="-1">&laquo; Previous</a>
                 </li>
-                {{ render_pagination_link(first_page, query_state) }}
+                {{ render_pagination_link(first_page, form) }}
                 {% if first_page + 1 <= pagination_state.pages %}
-                {{ render_pagination_link(first_page+1, query_state) }}
+                {{ render_pagination_link(first_page+1, form) }}
                 {% endif %}
                 {% if first_page + 2 <= pagination_state.pages %}
-                {{ render_pagination_link(first_page+2, query_state) }}
+                {{ render_pagination_link(first_page+2, form) }}
                 {% endif %}
                 <li class="page-item {% if not pagination_state.next_url %}disabled{% endif %}">
                   <a class="page-link" href="{{pagination_state.next_url}}">Next &raquo;</a>

@@ -24,10 +24,12 @@
 {%- endmacro %}
 
 
-{% macro render_pagination_link(page, query_state) -%}
+{% macro render_pagination_link(page, form) -%}
 {% set url= url_for('main.search_page',
     page=page, 
-    **query_state) %}
+    concept=form.concept.data,
+    term=form.term.data,
+    gloss=form.gloss.data) %}
 <li class="page-item"><a class="page-link" href="{{url}}">
 	{{page}}
 </a></li>
