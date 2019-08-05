@@ -25,36 +25,49 @@ def search_page():
 
     query = Term.query.join(Concept).join(Language).join(Gloss).order_by(asc(func.lower(Concept.name)))
 
-    kwargs = {}
+    query_state = {}
 
     if form.validate_on_submit():
-        kwargs['concept_query'] = form.concept.data
-        kwargs['term_query'] = form.term.data
-        kwargs['gloss_query'] = form.gloss.data
-        return redirect(url_for('main.search_page', **kwargs))
+        query_state['concept'] = form.concept.data
+        query_state['term'] = form.term.data
+        query_state['gloss'] = form.gloss.data
+        return redirect(url_for('main.search_page', **query_state))
     else:
-        form.concept.data = kwargs['concept_query'] = request.args.get('concept_query') or ""
-        form.concept.term = kwargs['term_query'] = request.args.get('term_query') or ""
-        form.concept.gloss = kwargs['gloss_query'] = request.args.get('gloss_query') or ""
+        form.concept.data = query_state['concept'] = request.args.get('concept') or ""
+        form.term.data = query_state['term'] = request.args.get('term') or ""
+        form.gloss.data = query_state['gloss'] = request.args.get('gloss') or ""
 
-
-    if kwargs['concept_query']:
-        query = query.filter(Concept.name.like(kwargs['concept_query'].strip()))
-    if kwargs['term_query'] != "":
-        query = query.filter(Term.text.like(kwargs['term_query'].strip()))
-    if kwargs['gloss_query']:
-        query = query.filter(Gloss.gloss.like(kwargs['gloss_query'].strip()))
+    if query_state['concept'] != "":
+        query = query.filter(Concept.name.like(query_state['concept'].strip()))
+    if query_state['term'] != "":
+        query = query.filter(Term.text.like(query_state['term'].strip()))
+    if query_state['gloss'] != "":
+        query = query.filter(Gloss.gloss.like(query_state['gloss'].strip()))
 
     results = query.paginate(page, 25, False)
 
-    begin_cnt = (1 + (25 * (page-1)))
-    end_cnt = min(query.count(), (25 * page))
-    flash("{} to {} of {} (page {} of {})".format(begin_cnt, end_cnt, query.count(), results.page, results.pages), "primary")
-
-    kwargs['next_url'] = url_for('main.search_page', page=results.next_num, **kwargs) \
+    pagination_state = {}
+    pagination_state["next_url"] = url_for('main.search_page',
+            page=results.next_num,
+            **query_state) \
         if results.has_next else None
-    kwargs['prev_url'] = url_for('main.search_page', page=results.prev_num, **kwargs) \
+    pagination_state["prev_url"] = url_for('main.search_page',
+            page=results.prev_num,
+            **query_state) \
         if results.has_prev else None
 
-    kwargs['languages'] = Language.query.order_by(Language.name).all()
-    return render_template('search_page.html', form=form, results=results, **kwargs)
+    pagination_state['total_cnt'] = query.count()
+
+    pagination_state['begin_cnt'] = (1 + (25 * (page-1)))
+    pagination_state['end_cnt'] = min(pagination_state['total_cnt'], (25 * page))
+    pagination_state['page'] = page
+    pagination_state['pages'] = int((pagination_state['total_cnt'] / 25) + 1)
+
+    languages = Language.query.order_by(Language.name).all()
+
+    return render_template('search_page.html',
+            form=form,
+            results=results,
+            query_state=query_state,
+            pagination_state=pagination_state,
+            languages=languages)

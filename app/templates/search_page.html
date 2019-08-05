@@ -1,14 +1,13 @@
 {% extends "layout.html" %}
 
-{% from "macros.html" import render_field, render_submit_field, render_prev_next %}
+{% from "macros.html" import render_field, render_submit_field, render_pagination_link %}
 
 {% block content %}
 
 
 <hr class="no-margins"/>
 
-{{ render_prev_next(prev_url, next_url) }}
-<table class="table table-bordered">
+<table class="table table-bordered table-sm" cellspacing="0">
     <thead>
         <tr>
             <th scope="col">Domain</th>
@@ -49,11 +48,11 @@
                     {{ form.gloss(placeholder="search")  }}
                 </td>
             </tr>
-        <input type="submit" style="display:none">
+            <input type="submit" style="display:none">
         </form>
     </thead>
     <tbody>
-        
+
         {% for result in results.items %}
         <tr>
             <td>{{result.concept.domain}}</td>
@@ -69,9 +68,33 @@
         </tr>
         {% endfor %}
     </tbody>
-
 </table>
-
-{{ render_prev_next(prev_url, next_url) }}
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            Displaying results {{pagination_statebegin_cnt}} to {{pagination_state.end_cnt}} of {{pagination_state.total_cnt}}
+        </div>
+        <div class="col-4">
+            {% set first_page = ([pagination_state.page-1,1] | sort)[-1] %}
+            <nav aria-label="Page navigation example">
+              <ul class="pagination justify-content-end">
+                <li class="page-item {% if not pagination_state.prev_url %}disabled{% endif %}">
+                  <a class="page-link" href="{{pagination_state.prev_url}}" tabindex="-1">&laquo; Previous</a>
+                </li>
+                {{ render_pagination_link(first_page, query_state) }}
+                {% if first_page + 1 <= pagination_state.pages %}
+                {{ render_pagination_link(first_page+1, query_state) }}
+                {% endif %}
+                {% if first_page + 2 <= pagination_state.pages %}
+                {{ render_pagination_link(first_page+2, query_state) }}
+                {% endif %}
+                <li class="page-item {% if not pagination_state.next_url %}disabled{% endif %}">
+                  <a class="page-link" href="{{pagination_state.next_url}}">Next &raquo;</a>
+                </li>
+              </ul>
+            </nav>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
