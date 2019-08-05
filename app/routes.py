@@ -29,9 +29,10 @@ def search_page():
             term=form.term.data,
             gloss=form.gloss.data))
 
-    concept = request.args.get('concept')
-    term = request.args.get('term')
-    gloss = request.args.get('gloss')
+    #XXX: is there a way to auto-populate a form given the request object?
+    concept = form.concept.data = request.args.get('concept')
+    term = form.term.data = request.args.get('term')
+    gloss = form.gloss.data = request.args.get('gloss')
 
     query = Term.query.join(Concept).join(Language).join(Gloss).order_by(asc(func.lower(Concept.name)))
     if concept:
@@ -43,8 +44,6 @@ def search_page():
 
     results = query.paginate(page=page, per_page=25)
     results.total = query.count() #XXX: why do I have to manually set this?
-
-    print("NBT: {} {} {}".format(results.page, results.total, results.pages))
 
     pagination_state = {}
     pagination_state["next_url"] = url_for('main.search_page',
@@ -60,12 +59,10 @@ def search_page():
             gloss=gloss) \
         if results.has_prev else None
 
-    pagination_state['total_cnt'] = query.count()
-
     pagination_state['begin_cnt'] = (1 + (25 * (page-1)))
-    pagination_state['end_cnt'] = min(pagination_state['total_cnt'], (25 * page))
+    pagination_state['end_cnt'] = min(results.total, (25 * page))
     pagination_state['page'] = page
-    pagination_state['pages'] = int((pagination_state['total_cnt'] / 25) + 1)
+    pagination_state['pages'] = int((results.total / 25) + 1)
 
     return render_template('search_page.html',
             form=form,
