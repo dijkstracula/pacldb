@@ -41,7 +41,10 @@ def search_page():
     if gloss:
         query = query.filter(Gloss.gloss.like(gloss.strip()))
 
-    results = query.paginate(page, 25, False)
+    results = query.paginate(page=page, per_page=25)
+    results.total = query.count() #XXX: why do I have to manually set this?
+
+    print("NBT: {} {} {}".format(results.page, results.total, results.pages))
 
     pagination_state = {}
     pagination_state["next_url"] = url_for('main.search_page',

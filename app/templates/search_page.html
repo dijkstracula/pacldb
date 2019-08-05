@@ -71,25 +71,29 @@
 </table>
 <div class="container">
     <div class="row">
-        <div class="col-8">
-            Displaying results {{pagination_statebegin_cnt}} to {{pagination_state.end_cnt}} of {{pagination_state.total_cnt}}
-        </div>
         <div class="col-4">
+            Displaying results {{pagination_state.begin_cnt}} to {{pagination_state.end_cnt}} of {{results.total}}
+        </div>
+        <div class="col-8">
             {% set first_page = ([pagination_state.page-1,1] | sort)[-1] %}
             <nav aria-label="Page navigation example">
               <ul class="pagination justify-content-end">
                 <li class="page-item {% if not pagination_state.prev_url %}disabled{% endif %}">
-                  <a class="page-link" href="{{pagination_state.prev_url}}" tabindex="-1">&laquo; Previous</a>
+                  <a class="page-link" href="{{pagination_state.prev_url}}" tabindex="-1">&laquo;</a>
                 </li>
-                {{ render_pagination_link(first_page, form) }}
-                {% if first_page + 1 <= pagination_state.pages %}
-                {{ render_pagination_link(first_page+1, form) }}
-                {% endif %}
-                {% if first_page + 2 <= pagination_state.pages %}
-                {{ render_pagination_link(first_page+2, form) }}
-                {% endif %}
+				  {%- for page in results.iter_pages() %}
+					{% if page %}
+					  {% if page != results.page %}
+						{{ render_pagination_link(page, form) }}
+					  {% else %}
+						<strong>{{ render_pagination_link(page, form) }}</strong>
+					  {% endif %}
+					{% else %}
+					  <span class=ellipsis>…</span>
+					{% endif %}
+				  {%- endfor %}
                 <li class="page-item {% if not pagination_state.next_url %}disabled{% endif %}">
-                  <a class="page-link" href="{{pagination_state.next_url}}">Next &raquo;</a>
+                  <a class="page-link" href="{{pagination_state.next_url}}">&raquo;</a>
                 </li>
               </ul>
             </nav>
