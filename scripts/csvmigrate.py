@@ -75,6 +75,7 @@ class Migrator:
 
     def process_term(self, text, morph_type, cname, domain, geo):
         c = self.conn.cursor()
+
         c.execute('SELECT id FROM concepts WHERE name=? AND domain=?', (cname, domain))
         cid = c.fetchone()[0]
 
@@ -84,12 +85,26 @@ class Migrator:
         else:
             lid = ""
 
+        c.execute('SELECT id FROM morphs WHERE name=?', (morph_type,))
+        mid = c.fetchone()[0]
+
         c.execute('SELECT * FROM terms WHERE text = ?', (text,))
         if len(c.fetchall()) > 0:
             return # Already exists.
 
-        c.execute('INSERT INTO terms(text, morph_type, concept_id, language_id) VALUES (?,?,?,?)', (text, morph_type, cid, lid))
+        c.execute('INSERT INTO terms(text, morph_id, concept_id, language_id) VALUES (?,?,?,?)', (text, mid, cid, lid))
         self.rows_processed += 1
+
+
+    def process_morph(self, morph_name):
+        c = self.conn.cursor()
+        c.execute('SELECT id FROM morphs WHERE name=?', (morph_name,))
+        if len(c.fetchall()) > 0:
+            return # Already exists.)
+
+        c.execute('INSERT INTO morphs(name, desc) VALUES(?,?)', (morph_name, morph_name));
+        self.rows_processed += 1
+
 
     def process_gloss(self, text, gloss, bib_src, page):
         c = self.conn.cursor()
@@ -107,7 +122,7 @@ class Migrator:
 
     def process_row(self, row):
         typ = row.get("TYPE")
-        morph_type = "" #row.get("Morphological Type: N, N-N, N-N-N, N-P, NMLZ, PRED, N-QUAL, In").strip() or row.get("Morphological type") or ""
+        morph_type = (row.get("Morphological Type: N, N-N, N-N-N, N-P, NMLZ, PRED, N-QUAL, In") or row.get("Morphological type") or "N/A").strip()
         geo = row.get("GEO CODE")
         lang = row.get("Language").strip()
         concept = row.get("Concept").strip()
@@ -119,7 +134,9 @@ class Migrator:
         if concept and typ and term:
             self.process_language(lang, geo)
             self.process_concept(concept, typ)
+            self.process_morph(morph_type)
             self.process_term(term,morph_type,concept,typ, geo)
+
             for gloss in set(re.split("[,;]\s*", glosses)):
                 self.process_gloss(term, gloss, bib_src, pgn)
 

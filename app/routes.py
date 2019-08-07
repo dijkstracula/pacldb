@@ -1,12 +1,10 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_user import current_user
 
-from sqlalchemy import asc, func
+from sqlalchemy import asc, distinct, func
 
 from app import forms
-from app.models import Concept, Gloss, Language, Term
-
-from collections import defaultdict
+from app.models import Concept, Gloss, Language, Morph, Term
 
 main_blueprint = Blueprint('main', __name__, template_folder='templates')
 
@@ -26,7 +24,9 @@ def search_page():
     if form.validate_on_submit():
         return redirect(url_for('main.search_page',
             concept=form.concept.data,
+            morph_type=form.morph_type.data,
             term=form.term.data,
+            language=form.language.data,
             gloss=form.gloss.data))
 
     #XXX: is there a way to auto-populate a form given the request object?
@@ -34,11 +34,24 @@ def search_page():
     term = form.term.data = request.args.get('term')
     gloss = form.gloss.data = request.args.get('gloss')
 
-    query = Term.query.join(Concept).join(Language).join(Gloss).order_by(asc(func.lower(Concept.name)))
+    language_id = request.args.get('language')
+    form.language.data = Language.query.filter(Language.id == language_id).first()
+
+    morph_id = request.args.get('morph_type')
+    form.morph_type.data = Morph.query.filter(Morph.id == morph_id).first()
+
+    print("NBT: {}".format(form.morph_type.data))
+
+    query = Term.query.join(Concept).join(Language).join(Gloss).join(Morph).order_by(asc(func.lower(Concept.name)))
+
     if concept:
         query = query.filter(Concept.name.like(concept.strip()))
+    if morph_id:
+        query = query.filter(Term.morph_id == morph_id);
     if term:
         query = query.filter(Term.text.like(term.strip()))
+    if language_id:
+        query = query.filter(Term.language_id == language_id);
     if gloss:
         query = query.filter(Gloss.gloss.like(gloss.strip()))
 

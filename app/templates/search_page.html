@@ -23,26 +23,24 @@
             {{ form.hidden_tag() }}
             <tr>
                 <td> 
-                    <select class="form-control" id="exampleFormControlSelect1">
+                    <select class="form-control" id="exampleFormControlSelect1" onchange="this.form.submit()">
                         <option value>--any--</option>
                     </select>
                 </td>
                 <td>
                     {{ form.concept(placeholder="search")  }}
+                    {% for domain in domains %}
+                    <option value>{{domain}}</option>
+                    {% endfor %}
                 </td>
                 <td>
                     {{ form.term(placeholder="search")  }}
                 </td>
                 <td>
-                    TODO
+                    {{ form.morph_type(onchange="this.form.submit()") }}
                 </td>
                 <td>
-                    <select class="form-control" id="exampleFormControlSelect1">
-                        <option value>--any--</option>
-                        {% for name in ["temp", "foo"] %}
-                        <option value>{{name}}</option>
-                        {% endfor %}
-                    </select>
+                    {{ form.language(onchange="this.form.submit()") }}
                 </td>
                 <td>
                     {{ form.gloss(placeholder="search")  }}
@@ -58,7 +56,7 @@
             <td>{{result.concept.domain}}</td>
             <td>{{result.concept.name}}</td>
             <td>{{result.text}}</td>
-            <td>{{result.morph_type}}</td>
+            <td>{{result.morph.name}}</td>
             <td>{{result.language.name}}</td>
             <td>
                 {% for gloss in result.glosses %}

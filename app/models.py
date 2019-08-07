@@ -9,7 +9,7 @@ class Language(db.Model):
     geocode = db.Column(db.String(8), unique=True)
 
     def __repr__(self):
-        return '<Language {} {}>'.format(self.name, self.geocode)
+        return str(self.id)
 
 class Concept(db.Model):
     __tablename__ = 'concepts'
@@ -19,6 +19,15 @@ class Concept(db.Model):
 
     def __repr__(self):
         return '<Concept {} {}>'.format(self.name, self.domain)
+
+class Morph(db.Model):
+    __tablename__ = 'morphs'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(16), index=True, nullable=False)
+    desc = db.Column(db.String(256))
+
+    def __repr__(self):
+        return str(self.id)
 
 class Gloss(db.Model):
     __tablename__ = 'glosses'
@@ -36,15 +45,17 @@ class Term(db.Model):
     __tablename__ = 'terms'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     text = db.Column(db.String(128), nullable=False, index=True, unique=True)
-    morph_type = db.Column(db.String(16), nullable=False)
+
+    morph = db.relationship("Morph", lazy=True)
+    morph_id = db.Column(db.Integer, db.ForeignKey("morphs.id"))
 
     glosses = db.relationship("Gloss", backref="term", lazy=True)
-    concept = db.relationship("Concept", lazy=True)
-    language = db.relationship("Language", lazy=True)
 
+    concept = db.relationship("Concept", lazy=True)
     concept_id = db.Column(db.Integer, db.ForeignKey('concepts.id'), nullable=False)
 
     # Some are missing languages, so make nullable.
+    language = db.relationship("Language", lazy=True)
     language_id = db.Column(db.Integer, db.ForeignKey('languages.id'))
 
     def __repr__(self):
