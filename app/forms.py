@@ -13,7 +13,9 @@ def get_morphs():
 class SearchForm(FlaskForm):
     concept = StringField('concept')
     morph_type = QuerySelectField('morph_type', query_factory=get_morphs, allow_blank=True, get_label="name")
-    term = StringField('term')
+    orthography = StringField('orthography')
+    stem_form = StringField('stem_form')
+    ipa = StringField('ipa')
     gloss = StringField('gloss')
     language = QuerySelectField('language', query_factory=get_langs, allow_blank=True, get_label="name")
     submit = SubmitField('Search')

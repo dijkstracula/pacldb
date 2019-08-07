@@ -28,7 +28,8 @@
 {% set url= url_for('main.search_page',
     page=page, 
     concept=form.concept.data,
-    term=form.term.data,
+    orthography=form.orthography.data,
+    language=form.language.data,
     gloss=form.gloss.data) %}
 <li class="page-item"><a class="page-link" href="{{url}}">
 	{{page}}

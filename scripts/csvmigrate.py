@@ -38,7 +38,9 @@ class Migrator:
             raise Exception("database {} not found".format(dbpath))
 
         self.conn = sqlite3.connect(dbpath)
-        self.rows_processed = 0
+        self.db_inserts = 0
+        self.rows_read = 0
+        self.rows_skipped = 0
 
         c = self.conn.cursor()
         c.execute('DELETE FROM concepts')
@@ -62,7 +64,7 @@ class Migrator:
             return # Already exists.
 
         c.execute('INSERT INTO languages(name, geocode) VALUES (?,?)', (name, geocode))
-        self.rows_processed += 1
+        self.db_inserts += 1
 
     def process_concept(self, name, domain):
         c = self.conn.cursor()
@@ -71,9 +73,9 @@ class Migrator:
             return # Already exists.
 
         c.execute('INSERT INTO concepts(name, domain) VALUES (?,?)', (name, domain))
-        self.rows_processed += 1
+        self.db_inserts += 1
 
-    def process_term(self, text, morph_type, cname, domain, geo):
+    def process_term(self, ortho, stem, ipa, morph_type, cname, domain, geo):
         c = self.conn.cursor()
 
         c.execute('SELECT id FROM concepts WHERE name=? AND domain=?', (cname, domain))
@@ -88,12 +90,12 @@ class Migrator:
         c.execute('SELECT id FROM morphs WHERE name=?', (morph_type,))
         mid = c.fetchone()[0]
 
-        c.execute('SELECT * FROM terms WHERE text = ?', (text,))
+        c.execute('SELECT * FROM terms WHERE orthography = ?', (ortho,))
         if len(c.fetchall()) > 0:
             return # Already exists.
 
-        c.execute('INSERT INTO terms(text, morph_id, concept_id, language_id) VALUES (?,?,?,?)', (text, mid, cid, lid))
-        self.rows_processed += 1
+        c.execute('INSERT INTO terms(orthography, stem_form, ipa, morph_id, concept_id, language_id) VALUES (?,?,?,?,?,?)', (ortho, stem, ipa, mid, cid, lid))
+        self.db_inserts += 1
 
 
     def process_morph(self, morph_name):
@@ -103,13 +105,13 @@ class Migrator:
             return # Already exists.)
 
         c.execute('INSERT INTO morphs(name, desc) VALUES(?,?)', (morph_name, morph_name));
-        self.rows_processed += 1
+        self.db_inserts += 1
 
 
-    def process_gloss(self, text, gloss, bib_src, page):
+    def process_gloss(self, ortho, gloss, bib_src, page):
         c = self.conn.cursor()
 
-        c.execute('SELECT id FROM terms WHERE text=?', (text,))
+        c.execute('SELECT id FROM terms WHERE orthography =?', (ortho,))
         tid = c.fetchone()[0]
 
         c.execute('SELECT * FROM glosses WHERE gloss=? AND source=? AND page=?', (gloss,bib_src, page))
@@ -117,28 +119,34 @@ class Migrator:
             return # Already exists.
 
         c.execute('INSERT INTO glosses(gloss, source, page, term_id) VALUES (?,?,?,?)', (gloss, bib_src, page, tid))
-        self.rows_processed += 1
+        self.db_inserts += 1
 
 
     def process_row(self, row):
-        typ = row.get("TYPE")
+        self.rows_read += 1
+
+        domain = row.get("DOMAIN")
         morph_type = (row.get("Morphological Type: N, N-N, N-N-N, N-P, NMLZ, PRED, N-QUAL, In") or row.get("Morphological type") or "N/A").strip()
         geo = row.get("GEO CODE")
         lang = row.get("Language").strip()
         concept = row.get("Concept").strip()
-        term = row.get("Original Term").strip()
-        glosses = row.get("Original Gloss").strip() # comma separated
+        ortho = row.get("Orthography").strip()
+        stem = row.get("Stem Form").strip()
+        ipa = row.get("IPA Form").strip()
+        glosses = row.get("Gloss").strip() # comma separated
         bib_src = row.get("Bib-Source").strip()
         pgn = row.get("Page number").strip()
 
-        if concept and typ and term:
+        if concept and domain and ortho:
             self.process_language(lang, geo)
-            self.process_concept(concept, typ)
+            self.process_concept(concept, domain)
             self.process_morph(morph_type)
-            self.process_term(term,morph_type,concept,typ, geo)
+            self.process_term(ortho, stem, ipa, morph_type,concept,domain, geo)
 
             for gloss in set(re.split("[,;]\s*", glosses)):
-                self.process_gloss(term, gloss, bib_src, pgn)
+                self.process_gloss(ortho, gloss, bib_src, pgn)
+        else:
+            self.rows_skipped += 1
 
     def process_file(self, filename):
         with open(filename, newline='', encoding='utf-8-sig') as f:
@@ -160,8 +168,8 @@ def main():
     e = time.time()
 
     print("All done!")
-    print("Processed {} entries in {:4.2f} seconds".format(m.rows_processed, (e-b)))
-
+    print("Inserted {} entries in {:4.2f} seconds".format(m.db_inserts, (e-b)))
+    print("Skipped {}/{} rows.".format(m.rows_skipped, m.rows_read))
     m.conn.close()
 
 

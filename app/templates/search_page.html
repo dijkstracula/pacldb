@@ -12,7 +12,9 @@
         <tr>
             <th scope="col">Domain</th>
             <th scope="col">Concept</th>
-            <th scope="col">Term</th>
+            <th scope="col">Orthography</th>
+            <th scope="col">Stem</th>
+            <th scope="col">IPA</th>
             <th scope="col">Morph</th>
             <th scope="col">Language</th>
             <th scope="col">Glosses</th>
@@ -34,7 +36,13 @@
                     {% endfor %}
                 </td>
                 <td>
-                    {{ form.term(placeholder="search")  }}
+                    {{ form.orthography(placeholder="search")  }}
+                </td>
+                <td>
+                    {{ form.stem_form(placeholder="search")  }}
+                </td>
+                <td>
+                    {{ form.ipa(placeholder="search")  }}
                 </td>
                 <td>
                     {{ form.morph_type(onchange="this.form.submit()") }}
@@ -55,7 +63,9 @@
         <tr>
             <td>{{result.concept.domain}}</td>
             <td>{{result.concept.name}}</td>
-            <td>{{result.text}}</td>
+            <td>{{result.orthography}}</td>
+            <td>{{result.stem_form}}</td>
+            <td>{{result.ipa}}</td>
             <td>{{result.morph.name}}</td>
             <td>{{result.language.name}}</td>
             <td>

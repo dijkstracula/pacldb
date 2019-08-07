@@ -25,13 +25,17 @@ def search_page():
         return redirect(url_for('main.search_page',
             concept=form.concept.data,
             morph_type=form.morph_type.data,
-            term=form.term.data,
+            orthography=form.orthography.data,
+            stem_form=form.stem_form.data,
+            ipa=form.ipa.data,
             language=form.language.data,
             gloss=form.gloss.data))
 
     #XXX: is there a way to auto-populate a form given the request object?
     concept = form.concept.data = request.args.get('concept')
-    term = form.term.data = request.args.get('term')
+    orthography = form.orthography.data = request.args.get('orthography')
+    stem_form = form.stem_form.data = request.args.get('stem_form')
+    ipa = form.ipa.data = request.args.get('ipa')
     gloss = form.gloss.data = request.args.get('gloss')
 
     language_id = request.args.get('language')
@@ -48,8 +52,12 @@ def search_page():
         query = query.filter(Concept.name.like(concept.strip()))
     if morph_id:
         query = query.filter(Term.morph_id == morph_id);
-    if term:
-        query = query.filter(Term.text.like(term.strip()))
+    if orthography:
+        query = query.filter(Term.orthography.like(orthography.strip()))
+    if stem_form:
+        query = query.filter(Term.stem_form.like(stem_form.strip()))
+    if ipa:
+        query = query.filter(Term.ipa.like(ipa.strip()))
     if language_id:
         query = query.filter(Term.language_id == language_id);
     if gloss:
@@ -62,13 +70,17 @@ def search_page():
     pagination_state["next_url"] = url_for('main.search_page',
             page=results.next_num,
             concept=concept,
-            term=term,
-            gloss=term) \
+            orthography=orthography,
+            stem_form=stem_form,
+            ipa=ipa,
+            gloss=gloss) \
         if results.has_next else None
     pagination_state["prev_url"] = url_for('main.search_page',
             page=results.prev_num,
             concept=concept,
-            term=term,
+            orthography=orthography,
+            stem_form=stem_form,
+            ipa=ipa,
             gloss=gloss) \
         if results.has_prev else None
 
