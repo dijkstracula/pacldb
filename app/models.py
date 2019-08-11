@@ -56,9 +56,8 @@ class Term(db.Model):
     concept = db.relationship("Concept", lazy=True)
     concept_id = db.Column(db.Integer, db.ForeignKey('concepts.id'), nullable=False)
 
-    # Some are missing languages, so make nullable.
     language = db.relationship("Language", lazy=True)
-    language_id = db.Column(db.Integer, db.ForeignKey('languages.id'))
+    language_id = db.Column(db.Integer, db.ForeignKey('languages.id'), nullable=False)
 
     def __repr__(self):
         return '<Term {}>'.format(self.text)
@@ -72,7 +71,7 @@ class User(db.Model, UserMixin):
     name = db.Column(db.String(256, collation='NOCASE'), nullable=False, index=True, server_default='')
     email = db.Column(db.String(255, collation='NOCASE'), nullable=False, index=True, unique=True)
     email_confirmed_at = db.Column(db.DateTime(), default=datetime.utcnow)
-    password = db.Column(db.String(255), nullable=False, server_default='')
+    password_hash = db.Column(db.String(255), nullable=False)
 
     def __repr__(self):
         return '<User {}>'.format(self.name)

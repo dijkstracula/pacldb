@@ -18,8 +18,8 @@ environment.)
 ### Initializing a fresh database
 
 ```
-$ flask db init
-$ flask db upgrade
+(venv) $ flask db init
+(venv) $ flask db migrate -m 'initial schema'
 ```
 
 This should generate a file in the root application directory called
@@ -41,6 +41,19 @@ $
 That script needs CSV files with certain headers.  See the docstring
 in `scripts/csvmigrate.py` for details.
 
+### Manually resetting the database from CSV
+
+Use only if you're okay with throwing away the DB (because, for example,
+you're going to reload it from CSV immediately):
+
+```
+(venv) $ rm pacl.sqlite
+(venv) $ rm -r migrations
+(venv) $ flask db init
+(venv) $ flask db migrate -m 'initial schema'
+(venv) $ python scripts/csvmigrate.py pacl.sqlite /path/to/pacl.csv
+```
+
 ## Running locally 
 
 ```
@@ -61,3 +74,4 @@ TODO
 
 [The Flask-User starter app](https://github.com/lingthio/Flask-User-starter-app) 
 was useful.
+[The Flask Mega-Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world) was useful.
