@@ -73,6 +73,7 @@ def search_page():
             orthography=orthography,
             stem_form=stem_form,
             ipa=ipa,
+            language=language,
             gloss=gloss) \
         if results.has_next else None
     pagination_state["prev_url"] = url_for('main.search_page',
@@ -81,6 +82,7 @@ def search_page():
             orthography=orthography,
             stem_form=stem_form,
             ipa=ipa,
+            language=language,
             gloss=gloss) \
         if results.has_prev else None
 

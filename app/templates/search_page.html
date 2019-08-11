@@ -7,82 +7,14 @@
 
 <hr class="no-margins"/>
 
-<table class="table table-bordered table-responsive table-sm" cellspacing="0">
-    <thead>
-        <tr>
-            <th class="th-sm" scope="col">Domain</th>
-            <th class="th-sm" scope="col">Concept</th>
-            <th class="th-sm" scope="col">Orthography</th>
-            <th class="th-sm" scope="col">Stem</th>
-            <th class="th-sm" scope="col">IPA</th>
-            <th class="th-sm" scope="col">Morph</th>
-            <th class="th-sm" scope="col">Language</th>
-            <th class="th-sm" scope="col">Glosses</th>
-        </tr>
-        <form method="POST" class="form" role="form">
-            {{ form.hidden_tag() }}
-            <tr>
-                <td> 
-                    <select class="form-control" id="exampleFormControlSelect1" onchange="this.form.submit()">
-                        <option value>--any--</option>
-                    </select>
-                </td>
-                <td>
-                    {{ form.concept(placeholder="search")  }}
-                    {% for domain in domains %}
-                    <option value>{{domain}}</option>
-                    {% endfor %}
-                </td>
-                <td>
-                    {{ form.orthography(placeholder="search")  }}
-                </td>
-                <td>
-                    {{ form.stem_form(placeholder="search")  }}
-                </td>
-                <td>
-                    {{ form.ipa(placeholder="search")  }}
-                </td>
-                <td>
-                    {{ form.morph_type(onchange="this.form.submit()") }}
-                </td>
-                <td>
-                    {{ form.language(onchange="this.form.submit()") }}
-                </td>
-                <td>
-                    {{ form.gloss(placeholder="search")  }}
-                </td>
-            </tr>
-            <input type="submit" style="display:none">
-        </form>
-    </thead>
-    <tbody>
-
-        {% for result in results.items %}
-        <tr>
-            <td>{{result.concept.domain}}</td>
-            <td>{{result.concept.name}}</td>
-            <td>{{result.orthography}}</td>
-            <td>{{result.stem_form}}</td>
-            <td>{{result.ipa}}</td>
-            <td>{{result.morph.name}}</td>
-            <td>{{result.language.name}}</td>
-            <td>
-                {% for gloss in result.glosses %}
-                [<a href="#" data-toggle="tooltip" title='{{ gloss.source}} page {{ gloss.page  }}'>{{gloss.gloss}}</a>]
-                {%endfor %}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<div class="container">
+<div class="container-fluid">
     <div class="row">
         <div class="col-4">
             Displaying results {{pagination_state.begin_cnt}} to {{pagination_state.end_cnt}} of {{results.total}}
         </div>
-        <div class="col-8">
+        <div class="col-7">
             {% set first_page = ([pagination_state.page-1,1] | sort)[-1] %}
-            <nav aria-label="Page navigation example">
+            <nav aria-label="Page navigation">
               <ul class="pagination justify-content-end">
                 <li class="page-item {% if not pagination_state.prev_url %}disabled{% endif %}">
                   <a class="page-link" href="{{pagination_state.prev_url}}" tabindex="-1">&laquo;</a>
@@ -104,7 +36,94 @@
               </ul>
             </nav>
         </div>
+		<div class="col-1">
+			<div class="dropdown" id="column-select-checkboxes">
+				<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					Cols
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu checkbox-menu allow-focus">
+				  <li><label><input type="checkbox" name="domain" checked>Domain</input></label></li>
+				  <li><label><input type="checkbox" name="concept" checked>Concept</input></label></li>
+				  <li><label><input type="checkbox" name="ortho" checked>Orthography</input></label></li>
+				  <li><label><input type="checkbox" name="stem" checked>Stem</input></label></li>
+				  <li><label><input type="checkbox" name="ipa" checked>IPA</input></label></li>
+				  <li><label><input type="checkbox" name="morph" checked>Morph</input></label></li>
+				  <li><label><input type="checkbox" name="language" checked>Language</input></label></li>
+				  <li><label><input type="checkbox" name="glosses" checked>Glosses</input></label></li>
+				</ul>
+			</div>
+		</div>
     </div>
 </div>
+<table class="table table-bordered table-striped table-responsive table-sm" cellspacing="0">
+    <thead>
+        <tr>
+            <th class="th-sm domain" scope="col">Domain</th>
+            <th class="th-sm concept" scope="col">Concept</th>
+            <th class="th-sm ortho" scope="col">Orthography</th>
+            <th class="th-sm stem" scope="col">Stem</th>
+            <th class="th-sm ipa" scope="col">IPA</th>
+            <th class="th-sm morph" scope="col">Morph</th>
+            <th class="th-sm language" scope="col">Language</th>
+            <th class="th-sm glosses" scope="col">Glosses</th>
+        </tr>
+        <form method="POST" class="form" role="form">
+            {{ form.hidden_tag() }}
+            <tr>
+                <td class="domain"> 
+                    <select class="form-control" id="domain-select" onchange="this.form.submit()">
+                        <option value>--any--</option>
+                    </select>
+                </td>
+                <td class="concept">
+                    {{ form.concept(placeholder="search")  }}
+                    {% for domain in domains %}
+                    <option value>{{domain}}</option>
+                    {% endfor %}
+                </td>
+                <td class="ortho">
+                    {{ form.orthography(placeholder="search")  }}
+                </td>
+                <td class="stem">
+                    {{ form.stem_form(placeholder="search")  }}
+                </td>
+                <td class="ipa">
+                    {{ form.ipa(placeholder="search")  }}
+                </td>
+                <td class="morph">
+                    {{ form.morph_type(onchange="this.form.submit()") }}
+                </td>
+                <td class="language">
+                    {{ form.language(onchange="this.form.submit()") }}
+                </td>
+                <td class="glosses">
+                    {{ form.gloss(placeholder="search")  }}
+                </td>
+            </tr>
+            <input type="submit" style="display:none">
+        </form>
+    </thead>
+    <tbody>
 
+        {% for result in results.items %}
+        <tr>
+            <td class="domain">{{result.concept.domain}}</td>
+            <td class="concept">{{result.concept.name}}</td>
+            <td class="ortho">{{result.orthography}}</td>
+            <td class="stem">{{result.stem_form}}</td>
+            <td class="ipa">{{result.ipa}}</td>
+            <td class="morph">{{result.morph.name}}</td>
+            <td class="language">{{result.language.name}}</td>
+            <td class="glosses">
+                {% for gloss in result.glosses %}
+                [<a href="#" data-toggle="tooltip" title='{{ gloss.source}} page {{ gloss.page  }}'>{{gloss.gloss}}</a>]
+                {%endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/search.js') }}"></script>
 {% endblock %}
