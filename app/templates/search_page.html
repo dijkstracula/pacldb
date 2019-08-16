@@ -61,7 +61,7 @@
         <tr>
             <th class="th-sm domain" scope="col">Domain</th>
             <th class="th-sm concept" scope="col">Concept</th>
-            <th class="th-sm ortho" scope="col">Orthography</th>
+            <th class="th-sm ortho" scope="col">Source Orthography</th>
             <th class="th-sm stem" scope="col">Stem</th>
             <th class="th-sm ipa" scope="col">IPA</th>
             <th class="th-sm morph" scope="col">Morph</th>
@@ -74,13 +74,13 @@
                 <td class="domain"> 
                     <select class="form-control" id="domain-select" onchange="this.form.submit()">
                         <option value>--any--</option>
+                        {% for domain in domains %}
+                        <option value>{{domain}}</option>
+                        {% endfor %}
                     </select>
                 </td>
                 <td class="concept">
                     {{ form.concept(placeholder="search")  }}
-                    {% for domain in domains %}
-                    <option value>{{domain}}</option>
-                    {% endfor %}
                 </td>
                 <td class="ortho">
                     {{ form.orthography(placeholder="search")  }}
@@ -110,7 +110,7 @@
         <tr>
             <td class="domain">{{result.concept.domain}}</td>
             <td class="concept">{{result.concept.name}}</td>
-            <td class="ortho">{{result.orthography}}</td>
+            <td class="ortho"><strong>{{result.orthography}}</strong></td>
             <td class="stem">{{result.stem_form}}</td>
             <td class="ipa">{{result.ipa}}</td>
             <td class="morph">{{result.morph.name}}</td>
