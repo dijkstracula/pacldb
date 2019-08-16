@@ -44,8 +44,6 @@ def search_page():
     morph_id = request.args.get('morph_type')
     form.morph_type.data = Morph.query.filter(Morph.id == morph_id).first()
 
-    print("NBT: {}".format(form.morph_type.data))
-
     query = Term.query.join(Concept).join(Language).join(Gloss).join(Morph).order_by(asc(func.lower(Concept.name)))
 
     if concept:
@@ -73,7 +71,7 @@ def search_page():
             orthography=orthography,
             stem_form=stem_form,
             ipa=ipa,
-            language=language,
+            language_id=language_id,
             gloss=gloss) \
         if results.has_next else None
     pagination_state["prev_url"] = url_for('main.search_page',
@@ -82,7 +80,7 @@ def search_page():
             orthography=orthography,
             stem_form=stem_form,
             ipa=ipa,
-            language=language,
+            language_id=language_id,
             gloss=gloss) \
         if results.has_prev else None
 

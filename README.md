@@ -1,5 +1,5 @@
 # PACLDB 
-Web frontend to the PACL Pan-Athapaskan Comparative Lexicon.
+Web frontend to the PACL Pan-Dene Comparative Lexicon.
 
 ## Initial Setup
 
@@ -72,6 +72,6 @@ TODO
 
 ## Citations 
 
-[The Flask-User starter app](https://github.com/lingthio/Flask-User-starter-app) 
+- [The Flask-User starter app](https://github.com/lingthio/Flask-User-starter-app) 
 was useful.
-[The Flask Mega-Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world) was useful.
+- [The Flask Mega-Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world) was useful.
