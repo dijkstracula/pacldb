@@ -78,8 +78,8 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     active = db.Column('is_active', db.Boolean(), nullable=False, server_default='1')
 
-    name = db.Column(db.String(256, collation='NOCASE'), nullable=False, index=True, server_default='')
-    email = db.Column(db.String(255, collation='NOCASE'), nullable=False, index=True, unique=True)
+    name = db.Column(db.String(256), nullable=False, index=True, server_default='')
+    email = db.Column(db.String(255), nullable=False, index=True, unique=True)
     email_confirmed_at = db.Column(db.DateTime(), default=datetime.utcnow)
     password_hash = db.Column(db.String(255), nullable=False)
 
