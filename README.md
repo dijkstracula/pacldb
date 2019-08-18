@@ -3,7 +3,13 @@ Web frontend to the PACL Pan-Dene Comparative Lexicon.
 
 ## Initial Setup
 
-First, make sure you have a Python 3 virtual environment set up.
+Make sure postgres is installed.
+
+```
+$ brew install postgresql #OSX
+```
+
+Next, make sure you have a Python 3 virtual environment set up.
 
 ```
 $ pip install virtualenv 
@@ -14,6 +20,12 @@ $ pip install -r requirements.txt
 
 (Once set up, you need only run the `source` command to enter the virtual
 environment.)
+
+If you get linker errors installing psycopg2 on osx,
+```
+$ sudo xcode-select --install
+$ pip install -r requirements.txt --global-option=build_ext --global-option="-I/usr/local/opt/openssl/include" --global-option="-L/usr/local/opt/openssl/lib"
+```
 
 ### Initializing a fresh database
 
@@ -56,10 +68,16 @@ you're going to reload it from CSV immediately):
 
 ## Running locally 
 
+PACL runs either with the stock Flask server...
 ```
 $ export FLASK_APP=app
 $ export FLASK_ENV=development
-$ flask run
+$ flask run # default port 5000
+```
+
+...or with gunicorn for production.
+```
+$ gunicorn run # default port 8000
 ```
 
 ## Deployment 
