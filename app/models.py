@@ -2,6 +2,15 @@ from datetime import datetime
 from flask_user import UserMixin
 from app import db
 
+class Domain(db.Model):
+    __tablename__ = 'domains'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(128), unique=True)
+    desc = db.Column(db.String(256), unique=True)
+
+    def __repr__(self):
+        return str(self.id)
+
 class Language(db.Model):
     __tablename__ = 'languages'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -15,10 +24,12 @@ class Concept(db.Model):
     __tablename__ = 'concepts'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(128), nullable=False, index=True)
-    domain = db.Column(db.String(128), nullable=False, index=True)
+
+    domain = db.relationship("Domain", lazy=True)
+    domain_id = db.Column(db.Integer, db.ForeignKey("domains.id"))
 
     def __repr__(self):
-        return '<Concept {} {}>'.format(self.name, self.domain)
+        return str(self.id)
 
 class Morph(db.Model):
     __tablename__ = 'morphs'
@@ -39,7 +50,7 @@ class Gloss(db.Model):
     term_id = db.Column(db.Integer, db.ForeignKey('terms.id'), nullable=False)
 
     def __repr__(self):
-        return '<Gloss {}>'.format(self.gloss)
+        return str(self.id)
 
 class Term(db.Model):
     __tablename__ = 'terms'
@@ -60,8 +71,7 @@ class Term(db.Model):
     language_id = db.Column(db.Integer, db.ForeignKey('languages.id'), nullable=False)
 
     def __repr__(self):
-        return '<Term {}>'.format(self.text)
-
+        return str(self.id)
 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
@@ -74,4 +84,4 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(255), nullable=False)
 
     def __repr__(self):
-        return '<User {}>'.format(self.name)
+        return str(self.id)

@@ -66,19 +66,33 @@ class Migrator:
         c.execute('INSERT INTO languages(name, geocode) VALUES (?,?)', (name, geocode))
         self.db_inserts += 1
 
+    def process_domain(self, name):
+        c = self.conn.cursor()
+        c.execute('SELECT * FROM domains WHERE name=?', (name, ))
+        if len(c.fetchall()) > 0:
+            return # Already exists.
+        c.execute('INSERT INTO domains(name) VALUES (?)', (name, ))
+
+        self.db_inserts += 1
+
     def process_concept(self, name, domain):
         c = self.conn.cursor()
-        c.execute('SELECT * FROM concepts WHERE name=? AND domain=?', (name, domain))
+
+        c.execute('SELECT id FROM domains WHERE name=?', (domain,))
+        did = c.fetchone()[0]
+
+        c.execute('SELECT * FROM concepts WHERE name=? AND domain_id=?', (name, did))
         if len(c.fetchall()) > 0:
             return # Already exists.
 
-        c.execute('INSERT INTO concepts(name, domain) VALUES (?,?)', (name, domain))
+
+        c.execute('INSERT INTO concepts(name, domain_id) VALUES (?,?)', (name, did))
         self.db_inserts += 1
 
     def process_term(self, ortho, stem, ipa, morph_type, cname, domain, geo):
         c = self.conn.cursor()
 
-        c.execute('SELECT id FROM concepts WHERE name=? AND domain=?', (cname, domain))
+        c.execute('SELECT id FROM concepts WHERE name=?', (cname, ))
         cid = c.fetchone()[0]
 
         if geo:
@@ -138,6 +152,7 @@ class Migrator:
         pgn = row.get("Page number").strip()
 
         if concept and domain and ortho:
+            self.process_domain(domain)
             self.process_language(lang, geo)
             self.process_concept(concept, domain)
             self.process_morph(morph_type)

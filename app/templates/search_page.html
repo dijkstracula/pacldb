@@ -72,12 +72,7 @@
             {{ form.hidden_tag() }}
             <tr>
                 <td class="domain"> 
-                    <select class="form-control" id="domain-select" onchange="this.form.submit()">
-                        <option value>--any--</option>
-                        {% for domain in domains %}
-                        <option value>{{domain}}</option>
-                        {% endfor %}
-                    </select>
+                    {{ form.domain(onchange="this.form.submit()") }}
                 </td>
                 <td class="concept">
                     {{ form.concept(placeholder="search")  }}
@@ -108,7 +103,7 @@
 
         {% for result in results.items %}
         <tr>
-            <td class="domain">{{result.concept.domain}}</td>
+            <td class="domain">{{result.concept.domain.name}}</td>
             <td class="concept">{{result.concept.name}}</td>
             <td class="ortho"><strong>{{result.orthography}}</strong></td>
             <td class="stem">{{result.stem_form}}</td>

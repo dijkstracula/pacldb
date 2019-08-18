@@ -2,10 +2,10 @@ from flask_wtf import FlaskForm
 from wtforms import SelectField, StringField, SubmitField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
-from app.models import Concept, Morph, Language
+from app.models import Domain, Morph, Language
 
 def get_domains():
-    return Concept.query.order_by(Concept.domain)
+    return Domain.query.order_by(Domain.name)
 
 def get_langs():
     return Language.query.order_by(Language.name)
