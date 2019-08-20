@@ -125,6 +125,11 @@ class Migrator:
     def process_gloss(self, ortho, gloss, bib_src, page):
         c = self.conn.cursor()
 
+        try:
+            page = int(page)
+        except Exception as e:
+            page = 0
+
         c.execute('SELECT id FROM terms WHERE orthography =?', (ortho,))
         tid = c.fetchone()[0]
 
