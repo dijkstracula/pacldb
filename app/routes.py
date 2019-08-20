@@ -54,19 +54,19 @@ def search_page():
     if domain_id:
         query = query.filter(Domain.id == domain_id)
     if concept:
-        query = query.filter(Concept.name.ilike(f'%{concept.strip()}%'))
+        query = query.filter(Concept.name.ilike(f'{concept.strip()}'))
     if morph_id:
         query = query.filter(Term.morph_id == morph_id);
     if orthography:
-        query = query.filter(Term.orthography.ilike(f'%{orthography.strip()}%'))
+        query = query.filter(Term.orthography.ilike(f'{orthography.strip()}'))
     if stem_form:
-        query = query.filter(Term.stem_form.ilike(f'%{stem_form.strip()}%'))
+        query = query.filter(Term.stem_form.ilike(f'%{stem_form.strip()}'))
     if ipa:
-        query = query.filter(Term.ipa.ilike(f'%{ipa.strip()}%'))
+        query = query.filter(Term.ipa.ilike(f'{ipa.strip()}'))
     if language_id:
         query = query.filter(Term.language_id == language_id);
     if gloss:
-        query = query.filter(Gloss.gloss.ilike(f'%{gloss.strip()}%'))
+        query = query.filter(Gloss.gloss.ilike(f'{gloss.strip()}'))
 
     results = query.paginate(page=page, per_page=100)
     results.total = query.count() #XXX: why do I have to manually set this?
