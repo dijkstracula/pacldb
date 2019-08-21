@@ -6,6 +6,8 @@ from sqlalchemy import asc, distinct, func
 from app import forms
 from app.models import Concept, Domain, Gloss, Language, Morph, Term
 
+import re
+
 main_blueprint = Blueprint('main', __name__, template_folder='templates')
 
 def register_blueprints(app):
@@ -60,9 +62,9 @@ def search_page():
     if orthography:
         query = query.filter(Term.orthography.ilike(f'{orthography.strip()}'))
     if stem_form:
-        query = query.filter(Term.stem_form.ilike(f'%{stem_form.strip()}'))
+        query = query.filter(Term.stem_form.ilike(f'%{stem_form.strip()}%'))
     if ipa:
-        query = query.filter(Term.ipa.ilike(f'{ipa.strip()}'))
+        query = query.filter(Term.ipa.op("~*")(f'{ipa.strip()}'))
     if language_id:
         query = query.filter(Term.language_id == language_id);
     if gloss:
