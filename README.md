@@ -84,21 +84,6 @@ $ gunicorn run # default port 8000
 
 The development database is sqlite.
 
-
-First, get the path to the database running on Heroku:
-```
-(venv) ➜  pacldb git:(master) ✗ heroku run python
-Running python on ⬢ pan-dlc... up, run.2290 (Hobby)
-Python 3.6.8 (default, Jan 29 2019, 19:35:16)
-[GCC 7.3.0] on linux
-Type "help", "copyright", "credits" or "license" for more information.
->>> import os
->>> os.environ.get('DATABASE_URL')
-'postgres://...'
-```
-
-Add that URL to `scripts/sqlmigrate`.
-
 Converting sqlite to postgres:
 
 ```
@@ -106,9 +91,8 @@ $ pgloader scripts/sqlmigrate # moves sqlite into local postgres
 $ pg_dump -Fc --no-acl --no-owner -h localhost -U ntaylor pacl > db.dump
 $ scp db.dump dijk:/srv/http/pub
 $ heroku pg:backups:restore http://pub.dijkstracula.net/db.dump postgresql-colorful-21508
+$ heroku ps:restart
 ```
-
-You'll have to restart the dyno instance after that.
 
 ## Deployment 
 

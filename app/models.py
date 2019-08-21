@@ -43,11 +43,11 @@ class Morph(db.Model):
 class Gloss(db.Model):
     __tablename__ = 'glosses'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    gloss = db.Column(db.String(512), nullable=False)
+    gloss = db.Column(db.String(512), nullable=False, index=True)
     source = db.Column(db.String(512), nullable=False, index=True)
     page = db.Column(db.Integer)
 
-    term_id = db.Column(db.Integer, db.ForeignKey('terms.id'), nullable=False)
+    term_id = db.Column(db.Integer, db.ForeignKey('terms.id'), nullable=False, index=True)
 
     def __repr__(self):
         return str(self.id)
@@ -76,11 +76,9 @@ class Term(db.Model):
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    active = db.Column('is_active', db.Boolean(), nullable=False, server_default='1')
-
+    active = db.Column('is_active', db.Boolean(), nullable=False)
     name = db.Column(db.String(512), nullable=False, index=True, server_default='')
     email = db.Column(db.String(255), nullable=False, index=True, unique=True)
-    email_confirmed_at = db.Column(db.DateTime(), default=datetime.utcnow)
     password_hash = db.Column(db.String(255), nullable=False)
 
     def __repr__(self):
