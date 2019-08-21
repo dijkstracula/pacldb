@@ -54,7 +54,7 @@ def search_page():
     if domain_id:
         query = query.filter(Domain.id == domain_id)
     if concept:
-        query = query.filter(Concept.name.ilike(f'{concept.strip()}'))
+        query = query.filter(Concept.name.op("~*")(f'(^|[^[:alnum:]]){concept.strip()}($|[^[:alnum:]])'))
     if morph_id:
         query = query.filter(Term.morph_id == morph_id);
     if orthography:

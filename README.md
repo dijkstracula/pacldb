@@ -34,25 +34,6 @@ $ pip install -r requirements.txt --global-option=build_ext --global-option="-I/
 (venv) $ flask db migrate -m 'initial schema'
 ```
 
-This should generate a file in the root application directory called
-`pacl.sqlite`.  If you have some CSV files that have been exported from
-the original Excel dataset, you can import them with the `csvmigrate.py`
-script.
-
-```
-$ scripts/csvmigrate.py pacl.sqlite \
-    ~/Downloads/FLORA.csv ~/Downloads/TOOL.csv
-
-Processing /Users/ntaylor/Downloads/FLORA.csv...
-Processing /Users/ntaylor/Downloads/TOOL.csv...
-All done!
-Processed 23132 entries in 1.17 seconds
-$ 
-```
-
-That script needs CSV files with certain headers.  See the docstring
-in `scripts/csvmigrate.py` for details.
-
 ### Manually resetting the database from CSV
 
 Use only if you're okay with throwing away the DB (because, for example,
@@ -64,6 +45,16 @@ you're going to reload it from CSV immediately):
 (venv) $ flask db init
 (venv) $ flask db migrate -m 'initial schema'
 (venv) $ python scripts/csvmigrate.py pacl.sqlite /path/to/pacl.csv
+```
+
+This generates a sqlite3 file.  We need to import it into postgres now.
+
+```
+$ pgloader scripts/sqlmigrate # moves sqlite into local postgres
+$ pg_dump -Fc --no-acl --no-owner -h localhost -U ntaylor pacl > db.dump
+$ scp db.dump dijk:/srv/http/pub
+$ heroku pg:backups:restore http://pub.dijkstracula.net/db.dump postgresql-colorful-21508
+$ heroku ps:restart
 ```
 
 ## Running locally 
@@ -82,17 +73,6 @@ $ gunicorn run # default port 8000
 
 ## DB migration to production
 
-The development database is sqlite.
-
-Converting sqlite to postgres:
-
-```
-$ pgloader scripts/sqlmigrate # moves sqlite into local postgres
-$ pg_dump -Fc --no-acl --no-owner -h localhost -U ntaylor pacl > db.dump
-$ scp db.dump dijk:/srv/http/pub
-$ heroku pg:backups:restore http://pub.dijkstracula.net/db.dump postgresql-colorful-21508
-$ heroku ps:restart
-```
 
 ## Deployment 
 

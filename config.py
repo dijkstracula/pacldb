@@ -9,8 +9,7 @@ class Config:
     USER_EMAIL_SENDER_NAME = 'Nathan Taylor'
     USER_EMAIL_SENDER_EMAIL = 'nbtaylor@gmail.com'
 
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-            'sqlite:///' + os.path.join(basedir, 'pacl.sqlite')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'postgres://localhost/pacl'
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = True
