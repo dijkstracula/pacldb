@@ -31,8 +31,11 @@ def create_app(config=Config):
     # Setup Flask-User to handle user account related forms
     user_manager = UserManager(app, db, models.User)
 
-    from .routes import register_blueprints
-    register_blueprints(app)
+    from .views import main_blueprint
+    app.register_blueprint(main_blueprint)
+
+    from .search import search_blueprint
+    app.register_blueprint(search_blueprint)
 
     @app.context_processor
     def context_processor():

@@ -25,7 +25,7 @@
 
 
 {% macro render_pagination_link(page, form) -%}
-{% set url= url_for('main.search_page',
+{% set url= url_for('search.search_page',
     page=page,
     domain_id=form.domain.data,
     concept=form.concept.data,
