@@ -1,5 +1,4 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
-from flask_user import current_user
 
 from sqlalchemy import asc, distinct, func
 
@@ -14,7 +13,7 @@ import re
 @search_blueprint.route('/', methods=['GET', 'POST'])
 def search_page():
     page = request.args.get('page', 1, type=int)
-    form = SearchForm(request.form, obj=current_user)
+    form = SearchForm(request.form)
 
     if form.validate_on_submit():
         return redirect(url_for('search.search_page',

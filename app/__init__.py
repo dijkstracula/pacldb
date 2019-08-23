@@ -1,7 +1,6 @@
 import os
 
 from flask import Flask
-from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
 from flask_migrate import Migrate, MigrateCommand
 from flask_sqlalchemy import SQLAlchemy
@@ -21,15 +20,14 @@ def create_app(config=Config):
     app = Flask(__name__)
     app.config.from_object(config)
 
-    Bootstrap(app)
+    login_manager.init_app(app)
+    login_manager.login_view = 'auth.login'
 
-    # Setup DB
     db.init_app(app)
     with app.app_context():
         db.create_all()
         migrate.init_app(app, db)
 
-    #CSRF
     csrf_protect.init_app(app)
 
     from .views import main_blueprint
@@ -40,8 +38,5 @@ def create_app(config=Config):
 
     from .auth import auth_blueprint
     app.register_blueprint(auth_blueprint)
-
-    login_manager.login_view = 'auth.login'
-    login_manager.init_app(app)
 
     return app

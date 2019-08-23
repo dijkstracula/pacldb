@@ -40,14 +40,15 @@ Use only if you're okay with throwing away the DB (because, for example,
 you're going to reload it from CSV immediately):
 
 ```
-(venv) $ rm pacl.sqlite
+(venv) $ echo 'drop database pacl' | psql
+(venv) $ echo 'create database pacl' | psql
 (venv) $ rm -r migrations
 (venv) $ flask db init
 (venv) $ flask db migrate -m 'initial schema'
-(venv) $ python scripts/csvmigrate.py pacl.sqlite /path/to/pacl.csv
+(venv) $ python scripts/csvmigrate.py 'postgres://localhost/pacl' /path/to/pacl.csv
 ```
 
-This generates a sqlite3 file.  We need to import it into postgres now.
+To copy the database to production:
 
 ```
 $ pgloader scripts/sqlmigrate # moves sqlite into local postgres

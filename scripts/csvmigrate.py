@@ -17,10 +17,10 @@ adds them to the database.  The CSV must have the following columns:
     - "Bib-Source"
     - "Page number"
 
-usage: csvmigrate.py <path-to-database>.sqlite [<path_to_csv>.csv ...]
+usage: csvmigrate.py <path-to-database> [<path_to_csv>.csv ...]
 """
 
-import sqlite3
+import psycopg2
 import csv
 import os
 import re
@@ -34,10 +34,8 @@ concepts = defaultdict(list)
 
 class Migrator:
     def __init__(self, dbpath):
-        if not os.path.isfile(dbpath):
-            raise Exception("database {} not found".format(dbpath))
 
-        self.conn = sqlite3.connect(dbpath)
+        self.conn = psycopg2.connect(dbpath)
         self.db_inserts = 0
         self.rows_read = 0
         self.rows_skipped = 0
@@ -51,74 +49,74 @@ class Migrator:
     def process_language(self, name, geocode):
         c = self.conn.cursor()
 
-        c.execute('SELECT * FROM languages WHERE name=? and geocode <>? OR name<>? and geocode=?', (name,geocode,name,geocode))
+        c.execute('SELECT * FROM languages WHERE name=%s and geocode <>%s OR name<>%s and geocode=%s', (name,geocode,name,geocode))
         res = c.fetchall()
         if len(res) > 0:
             print("Multiple geo results ({}, {})".format(name, geocode), str(res))
             return
 
         # Use OR here because some languages don't have geocodes and vice versa
-        res = c.execute('SELECT * FROM languages WHERE name=? or geocode=?', (name,geocode))
+        res = c.execute('SELECT * FROM languages WHERE name=%s or geocode=%s', (name,geocode))
         res = c.fetchall()
         if len(res) > 0:
             return # Already exists.
 
-        c.execute('INSERT INTO languages(name, geocode) VALUES (?,?)', (name, geocode))
+        c.execute('INSERT INTO languages(name, geocode) VALUES (%s,%s)', (name, geocode))
         self.db_inserts += 1
 
     def process_domain(self, name):
         c = self.conn.cursor()
-        c.execute('SELECT * FROM domains WHERE name=?', (name, ))
+        c.execute('SELECT * FROM domains WHERE name=%s', (name, ))
         if len(c.fetchall()) > 0:
             return # Already exists.
-        c.execute('INSERT INTO domains(name) VALUES (?)', (name, ))
+        c.execute('INSERT INTO domains(name) VALUES (%s)', (name, ))
 
         self.db_inserts += 1
 
     def process_concept(self, name, domain):
         c = self.conn.cursor()
 
-        c.execute('SELECT id FROM domains WHERE name=?', (domain,))
+        c.execute('SELECT id FROM domains WHERE name=%s', (domain,))
         did = c.fetchone()[0]
 
-        c.execute('SELECT * FROM concepts WHERE name=? AND domain_id=?', (name, did))
+        c.execute('SELECT * FROM concepts WHERE name=%s AND domain_id=%s', (name, did))
         if len(c.fetchall()) > 0:
             return # Already exists.
 
 
-        c.execute('INSERT INTO concepts(name, domain_id) VALUES (?,?)', (name, did))
+        c.execute('INSERT INTO concepts(name, domain_id) VALUES (%s,%s)', (name, did))
         self.db_inserts += 1
 
     def process_term(self, ortho, stem, ipa, morph_type, cname, domain, geo):
         c = self.conn.cursor()
 
-        c.execute('SELECT id FROM concepts WHERE name=?', (cname, ))
+        c.execute('SELECT id FROM concepts WHERE name=%s', (cname, ))
         cid = c.fetchone()[0]
 
         if geo:
-            c.execute('SELECT id FROM languages WHERE geocode=?', (geo,))
+            c.execute('SELECT id FROM languages WHERE geocode=%s', (geo,))
             lid = c.fetchone()[0]
         else:
             lid = ""
 
-        c.execute('SELECT id FROM morphs WHERE name=?', (morph_type,))
+        c.execute('SELECT id FROM morphs WHERE name=%s', (morph_type,))
         mid = c.fetchone()[0]
 
-        c.execute('SELECT * FROM terms WHERE orthography = ?', (ortho,))
+        c.execute('SELECT * FROM terms WHERE orthography = %s', (ortho,))
         if len(c.fetchall()) > 0:
             return # Already exists.
 
-        c.execute('INSERT INTO terms(orthography, stem_form, ipa, morph_id, concept_id, language_id) VALUES (?,?,?,?,?,?)', (ortho, stem, ipa, mid, cid, lid))
+        c.execute('INSERT INTO terms(orthography, stem_form, ipa, morph_id, concept_id, language_id) VALUES (%s,%s,%s,%s,%s,%s)', (ortho, stem, ipa, mid, cid, lid))
         self.db_inserts += 1
 
 
     def process_morph(self, morph_name):
         c = self.conn.cursor()
-        c.execute('SELECT id FROM morphs WHERE name=?', (morph_name,))
+        c.execute('SELECT id FROM morphs WHERE name=%s', (morph_name,))
         if len(c.fetchall()) > 0:
             return # Already exists.)
 
-        c.execute('INSERT INTO morphs(name, desc) VALUES(?,?)', (morph_name, morph_name));
+        c.execute('INSERT INTO morphs(name) VALUES (%s)', (morph_name,));
         self.db_inserts += 1
 
 
@@ -130,14 +128,14 @@ class Migrator:
         except Exception as e:
             page = 0
 
-        c.execute('SELECT id FROM terms WHERE orthography =?', (ortho,))
+        c.execute('SELECT id FROM terms WHERE orthography =%s', (ortho,))
         tid = c.fetchone()[0]
 
-        c.execute('SELECT * FROM glosses WHERE gloss=? AND source=? AND page=?', (gloss,bib_src, page))
+        c.execute('SELECT * FROM glosses WHERE gloss=%s AND source=%s AND page=%s', (gloss,bib_src, page))
         if len(c.fetchall()) > 0:
             return # Already exists.
 
-        c.execute('INSERT INTO glosses(gloss, source, page, term_id) VALUES (?,?,?,?)', (gloss, bib_src, page, tid))
+        c.execute('INSERT INTO glosses(gloss, source, page, term_id) VALUES (%s,%s,%s,%s)', (gloss, bib_src, page, tid))
         self.db_inserts += 1
 
 
@@ -173,8 +171,15 @@ class Migrator:
             rows = csv.DictReader(f, quotechar='"', dialect='excel')
             n = 0
             for row in rows:
-                self.process_row(row)
+                try:
+                    self.process_row(row)
+                except Exception as e:
+                    print(row)
+                    raise e
                 n += 1
+                if (n % 100 == 0):
+                    sys.stderr.write(".")
+                    sys.stderr.flush()
         return n
 
 def main():
