@@ -1,0 +1,5 @@
+load database
+     from sqlite:///Users/ntaylor/code/pacldb/pacl.sqlite
+     into postgres://localhost/pacl
+ with include drop, create tables, create indexes, reset sequences;
+
