@@ -1,7 +1,8 @@
 import os
 
 from flask import Flask
-from flask_user import UserManager
+from flask_bootstrap import Bootstrap
+from flask_login import LoginManager
 from flask_migrate import Migrate, MigrateCommand
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
@@ -19,6 +20,8 @@ def create_app(config=Config):
     app = Flask(__name__)
     app.config.from_object(config)
 
+    Bootstrap(app)
+
     # Setup DB
     db.init_app(app)
     with app.app_context():
@@ -28,17 +31,17 @@ def create_app(config=Config):
     #CSRF
     csrf_protect.init_app(app)
 
-    # Setup Flask-User to handle user account related forms
-    user_manager = UserManager(app, db, models.User)
-
     from .views import main_blueprint
     app.register_blueprint(main_blueprint)
 
     from .search import search_blueprint
     app.register_blueprint(search_blueprint)
 
-    @app.context_processor
-    def context_processor():
-        return dict(user_manager=user_manager)
+    from .auth import auth_blueprint
+    app.register_blueprint(auth_blueprint)
+
+    login_manager = LoginManager()
+    login_manager.login_view = 'auth.login'
+    login_manager.init_app(app)
 
     return app

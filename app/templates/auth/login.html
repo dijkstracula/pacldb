@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% from "macros.html" import render_form_group, render_checkbox_field, render_submit_field %}
+
+{% block content %}
+
+<div class="page-header">
+	<h1>Login</h1>
+</div>
+<div class="col-md-8 border">
+	<div class="form">
+		{{ render_form_group(form.email) }}
+		{{ render_form_group(form.password) }}
+		{{ render_checkbox_field(form.remember_me) }}
+		{{ render_submit_field(form.submit) }}
+	</div>
+	<div class="mt-2">
+		User accounts are required to make changes to the lexicon
+		and are not required to search.  If you do not have a
+		user account and believe you should, please contact 
+		<a href="mailto:sally.rice@ualberta.ca">Dr.Sally Rice</a>.
+	</div>
+</div>
+{% endblock %} 
