@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template
 
-from app import forms
 from app.models import Concept
 
 main_blueprint = Blueprint('main', __name__, template_folder='templates')

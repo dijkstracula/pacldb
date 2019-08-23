@@ -3,17 +3,18 @@ from flask_user import current_user
 
 from sqlalchemy import asc, distinct, func
 
-from app import forms
 from app.models import Concept, Domain, Gloss, Language, Morph, Term
 
 from . import search_blueprint
+
+from .forms import SearchForm
 
 import re
 
 @search_blueprint.route('/', methods=['GET', 'POST'])
 def search_page():
     page = request.args.get('page', 1, type=int)
-    form = forms.SearchForm(request.form, obj=current_user)
+    form = SearchForm(request.form, obj=current_user)
 
     if form.validate_on_submit():
         return redirect(url_for('search.search_page',
