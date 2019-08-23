@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask_user import UserMixin
-from app import db
+from app import db, login_manager
 
 class Domain(db.Model):
     __tablename__ = 'domains'
@@ -73,13 +73,15 @@ class Term(db.Model):
     def __repr__(self):
         return str(self.id)
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    active = db.Column('is_active', db.Boolean(), nullable=False)
-    name = db.Column(db.String(512), nullable=False, index=True, server_default='')
-    email = db.Column(db.String(255), nullable=False, index=True, unique=True)
-    password_hash = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(64), nullable=False, index=True, unique=True)
+    password_hash = db.Column(db.String(128), nullable=False)
 
     def __repr__(self):
         return str(self.id)

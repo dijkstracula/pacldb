@@ -12,6 +12,7 @@ from config import Config
 csrf_protect = CSRFProtect()
 db = SQLAlchemy()
 migrate = Migrate()
+login_manager = LoginManager()
 
 from app.models import Concept, Gloss, Language, Term, User
 
@@ -40,7 +41,6 @@ def create_app(config=Config):
     from .auth import auth_blueprint
     app.register_blueprint(auth_blueprint)
 
-    login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
 
