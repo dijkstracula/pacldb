@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import SelectField, StringField, SubmitField
+from wtforms import HiddenField, SelectField, StringField, SubmitField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
 from app.models import Domain, Morph, Language
@@ -22,4 +22,5 @@ class SearchForm(FlaskForm):
     ipa = StringField('ipa')
     gloss = StringField('gloss')
     language = QuerySelectField('language', query_factory=get_langs, allow_blank=True, get_label="name")
+    sort_column = HiddenField('sort_column')
     submit = SubmitField('Search')

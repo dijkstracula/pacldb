@@ -10,6 +10,26 @@ from .forms import SearchForm
 
 import re
 
+def table_by_name(name):
+    """Not my finest work, but I don't know of a way to extract a class
+    from a string that won't leave me paranoid about SQL injection, so
+    let's do it the silly way."""
+    if name == "domain":
+        return Domain.name
+    if name == "concept":
+        return Concept.name
+    if name == "morph":
+        return Morph.name
+    if name == "ortho":
+        return Term.orthography
+    if name == "stem":
+        return Term.stem_form
+    if name == "ipa":
+        return Term.ipa
+    if name == "language":
+        return Language.name
+    raise Exception("Unexpected sort order {}".format(name))
+
 @search_blueprint.route('/', methods=['GET', 'POST'])
 def search_page():
     page = request.args.get('page', 1, type=int)
@@ -17,6 +37,7 @@ def search_page():
 
     if form.validate_on_submit():
         return redirect(url_for('search.search_page',
+            page=page,
             domain_id=form.domain.data,
             concept=form.concept.data,
             morph_type=form.morph_type.data,
@@ -24,7 +45,8 @@ def search_page():
             stem_form=form.stem_form.data,
             ipa=form.ipa.data,
             language=form.language.data,
-            gloss=form.gloss.data))
+            gloss=form.gloss.data,
+            sort_column=form.sort_column.data))
 
     #XXX: is there a way to auto-populate a form given the request object?
     concept = form.concept.data = request.args.get('concept')
@@ -41,6 +63,8 @@ def search_page():
 
     morph_id = request.args.get('morph_type')
     form.morph_type.data = Morph.query.filter(Morph.id == morph_id).first()
+
+    sort_column = form.sort_column.data = request.args.get('sort_column')
 
     #query = Term.query.join(Concept).join(Language).join(Gloss).join(Domain).join(Morph).order_by(asc(func.lower(Concept.name)))
     query = Term.query.join(Concept).join(Language).join(Gloss).join(Domain).join(Morph)
@@ -62,6 +86,13 @@ def search_page():
     if gloss:
         query = query.filter(Gloss.gloss.ilike(f'{gloss.strip()}'))
 
+    if sort_column:
+        try:
+            query = query.order_by(asc(func.lower(table_by_name(sort_column))))
+        except Exception as e:
+            # garbage? just ignore it.
+            pass
+
     results = query.paginate(page=page, per_page=100)
     results.total = query.count() #XXX: why do I have to manually set this?
 
@@ -74,7 +105,8 @@ def search_page():
             stem_form=stem_form,
             ipa=ipa,
             language_id=language_id,
-            gloss=gloss) \
+            gloss=gloss,
+            sort_column=sort_column) \
         if results.has_next else None
     pagination_state["prev_url"] = url_for('search.search_page',
             page=results.prev_num,
@@ -84,7 +116,8 @@ def search_page():
             stem_form=stem_form,
             ipa=ipa,
             language_id=language_id,
-            gloss=gloss) \
+            gloss=gloss,
+            sort_column=sort_column) \
         if results.has_prev else None
 
     pagination_state['begin_cnt'] = (1 + (100 * (page-1)))
