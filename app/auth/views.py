@@ -9,29 +9,39 @@ from .forms import InviteForm, LoginForm
 
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
+def create_invite(email):
+    invitation = Invitation(email=email)
+    db.session.add(invitation)
+    db.session.commit()
+
+    try:
+        token = invitation.generate_secure_token()
+        resp = send_email(
+                email,
+                "Invitation to edit the Pan-Dene Comparative Lexicon",
+                "auth/email/invite",
+                token=token)
+
+        if not (resp.status_code >= 200 and resp.status_code <= 299):
+            raise Exception("Got {} from Sendgrid".format(resp.status_code))
+
+    except Exception as e:
+        db.session.rollback()
+        raise e
+
 @auth_blueprint.route('/invite', methods=['GET', 'POST'])
 @login_required
 def invite():
     form = InviteForm()
     if form.validate_on_submit():
         # POST
-        invitation = Invitation(email=form.email.data)
-        db.session.add(invitation)
-        db.session.commit()
-
         try:
-            token = invitation.generate_secure_token()
-            resp = send_email(form.email.data, "Pan-DLC invitation", "auth/email/invite", token=token)
+            create_invite(form.email.data)
         except Exception as e:
-            db.session.rollback()
-            flash("Couldn't send invitation ({})".format(e))
+            flash("Couldn't send invitation ({}).".format(e))
             return redirect(url_for("main.home_page"))
 
-        if resp.status_code >= 200 and resp.status_code <= 299:
-            flash("Email invitation sent.")
-        else:
-            flash("Couldn't send invitation (status code {})".format(resp.status_code))
-            db.session.rollback()
+        flash("Invitation to {} sent.".format(form.email.data))
         return redirect(url_for("main.home_page"))
     else:
         # GET
