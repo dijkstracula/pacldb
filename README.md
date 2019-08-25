@@ -72,6 +72,9 @@ $ flask run # default port 5000
 $ gunicorn run # default port 8000
 ```
 
+For account invite functionality, you'll need a local Sendgrid API key
+exported.
+
 ## DB migration to production
 
 
@@ -88,6 +91,5 @@ TODO
 
 ## Citations 
 
-- [The Flask-User starter app](https://github.com/lingthio/Flask-User-starter-app) 
-was useful.
-- [The Flask Mega-Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world) was useful.
+- [The Flask Mega-Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world)
+- [Flask Web Development (2nd ed)](https://www.oreilly.com/library/view/flask-web-development/9781491991725/)
