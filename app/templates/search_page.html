@@ -61,18 +61,21 @@
         <tr>
             <th class="th-sm domain" scope="col">Domain</th>
             <th class="th-sm concept" scope="col">Concept</th>
-            <th class="th-sm ortho" scope="col">Source Orthography</th>
+            <th class="th-sm ortho" scope="col">Source<br/> Orthography</th>
             <th class="th-sm stem" scope="col">Stem</th>
             <th class="th-sm ipa" scope="col">IPA <small>(regex)</small></th>
             <th class="th-sm morph" scope="col">Morph</th>
             <th class="th-sm language" scope="col">Language</th>
             <th class="th-sm glosses" scope="col">Glosses</th>
+            {% if current_user.is_authenticated %}
+            <th class="th-sm glosses" scope="col">Admin</th>
+            {% endif %}
         </tr>
         <form method="POST" class="form" role="form">
             {{ form.hidden_tag() }}
             <tr>
                 <td class="domain"> 
-                    {{ form.domain(onchange="this.form.submit()") }}
+                    {{ form.domain(class="form-control-sm", onchange="this.form.submit()") }}
                     <a href= "#" class="sort-by">⇕</a>
                 </td>
                 <td class="concept">
@@ -92,15 +95,15 @@
                     <a href= "#" class="sort-by">⇕</a>
                 </td>
                 <td class="morph">
-                    {{ form.morph_type(onchange="this.form.submit()") }}
+                    {{ form.morph_type(class="form-control-sm", onchange="this.form.submit()") }}
                     <a href= "#" class="sort-by">⇕</a>
                 </td>
                 <td class="language">
-                    {{ form.language(onchange="this.form.submit()") }}
+                    {{ form.language(class="form-control-sm", onchange="this.form.submit()", style="width:12") }}
                     <a href= "#" class="sort-by">⇕</a>
                 </td>
                 <td class="glosses">
-                    {{ form.gloss(placeholder="search")  }}
+                    {{ form.gloss(placeholder="search",size="12")  }}
                 </td>
             </tr>
             <input type="submit" style="display:none">
@@ -122,6 +125,10 @@
                 [<a href="#" data-toggle="tooltip" title='{{ gloss.source}} page {{ gloss.page  }}'>{{gloss.gloss}}</a>]
                 {%endfor %}
             </td>
+            
+            {% if current_user.is_authenticated %}
+            <td class="admin">[✎][⌫]</td>
+            {% endif %}
         </tr>
         {% endfor %}
     </tbody>
