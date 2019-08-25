@@ -1,7 +1,9 @@
 from datetime import datetime
+from flask import current_app
 from flask_login import UserMixin
 from app import db, login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 class Domain(db.Model):
     __tablename__ = 'domains'
@@ -78,11 +80,23 @@ class Term(db.Model):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+class Invitation(db.Model):
+    __tablename__ = 'invitations'
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(64), nullable=False, index=True, unique=True)
+
+    def generate_secure_token(self, expiration=3600 * 24 * 7):
+        s = Serializer(current_app.config['SECRET_KEY'], expiration)
+        return s.dumps({'confirm': self.id}).decode('utf-8')
+
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), nullable=False, index=True, unique=True)
     password_hash = db.Column(db.String(128), nullable=False)
+
+    first_name = db.Column(db.String(64))
+    last_name = db.Column(db.String(64))
 
     @property
     def password(self):

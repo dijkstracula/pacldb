@@ -14,6 +14,9 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = False
 
+    MAIL_SUBJECT_PREFIX = '[Pan-DLC]: '
+    MAIL_SENDER = 'Pan-DLC Admin <admin@pan-dlc.herokuapp.com>'
+
     ADMINS = [
         '"Nathan Taylor" <nbtaylor@gmail.com>',
     ]
