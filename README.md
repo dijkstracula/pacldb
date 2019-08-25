@@ -57,6 +57,21 @@ you're going to reload it from CSV immediately):
 (venv) $ python scripts/csvmigrate.py 'postgres://localhost/pacl' /path/to/pacl.csv
 ```
 
+Initialise an initial administration account:
+
+```
+(venv) ➜  pacldb git:(master) ✗ export FLASK_APP=pacl.py
+(venv) ➜  pacldb git:(master) ✗ flask shell
+Python 3.6.4 (default, Mar  1 2018, 18:36:42)
+[GCC 4.2.1 Compatible Apple LLVM 9.0.0 (clang-900.0.39.2)] on darwin
+App: app [production]
+Instance: /Users/ntaylor/code/pacldb/instance
+>>> u = User(email="nbtaylor@gmail.com", password="hunter2", is_admin=True)
+>>> db.session.add(u)
+>>> db.session.commit()
+>>> ^D
+now exiting InteractiveConsole...
+```
 To copy the database to production:
 
 ```

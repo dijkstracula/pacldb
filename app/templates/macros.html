@@ -13,8 +13,8 @@
 
 {% macro render_checkbox_field(field) -%}
 <div class="form-check">
-  <input class="form-check-input" type="checkbox" id="gridCheck">
-  <label for="{{field.id}}" class="form-check-label" for="gridCheck">
+    <input class="form-check-input" type="checkbox" id="{{field.id}}" name="{{field.id}}">
+    <label for="{{field.id}}" class="form-check-label" for="{{field.id}}">
 	{{field.label}}
   </label>
 </div>

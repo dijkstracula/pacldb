@@ -84,6 +84,7 @@ class Invitation(db.Model):
     __tablename__ = 'invitations'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), nullable=False, index=True, unique=True)
+    should_be_admin = db.Column(db.Boolean, default=False)
 
     def generate_secure_token(self, expiration=3600 * 24 * 7):
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
@@ -94,6 +95,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), nullable=False, index=True, unique=True)
     password_hash = db.Column(db.String(128), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
 
     first_name = db.Column(db.String(64))
     last_name = db.Column(db.String(64))
