@@ -21,6 +21,7 @@ class SearchForm(FlaskForm):
     stem_form = StringField('stem_form')
     ipa = StringField('ipa')
     gloss = StringField('gloss')
+    literal_gloss = StringField('literal_gloss')
     language = QuerySelectField('language', query_factory=get_langs, allow_blank=True, get_label="name", blank_text="-any-")
     sort_column = HiddenField('sort_column')
     submit = SubmitField('Search')

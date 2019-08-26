@@ -50,7 +50,8 @@
 				  <li><label><input type="checkbox" name="ipa" checked>IPA</input></label></li>
 				  <li><label><input type="checkbox" name="morph" checked>Morph</input></label></li>
 				  <li><label><input type="checkbox" name="language" checked>Language</input></label></li>
-				  <li><label><input type="checkbox" name="glosses" checked>Glosses</input></label></li>
+				  <li><label><input type="checkbox" name="glosses" checked>Source Glosses</input></label></li>
+				  <li><label><input type="checkbox" name="glosses" checked>Literal Gloss</input></label></li>
 				</ul>
 			</div>
 		</div>
@@ -66,7 +67,8 @@
             <th class="th-sm ipa" scope="col">IPA <small>(regex)</small></th>
             <th class="th-sm morph" scope="col">Morph</th>
             <th class="th-sm language" scope="col">Language</th>
-            <th class="th-sm glosses" scope="col">Glosses</th>
+            <th class="th-sm glosses" scope="col">Source Glosses</th>
+            <th class="th-sm literal_gloss" scope="col">Literal Gloss</th>
             {% if current_user.is_authenticated %}
             <th class="th-sm glosses" scope="col">Admin</th>
             {% endif %}
@@ -105,6 +107,9 @@
                 <td class="glosses">
                     {{ form.gloss(placeholder="search",size="12")  }}
                 </td>
+                <td class="literal_gloss">
+                    {{ form.literal_gloss(placeholder="search",size="12")  }}
+                </td>
             </tr>
             <input type="submit" style="display:none">
         </form>
@@ -122,10 +127,10 @@
             <td class="language">{{result.language.name}}</td>
             <td class="glosses">
                 {% for gloss in result.glosses %}
-                [<a href="#" data-toggle="tooltip" title='{{ gloss.source}} page {{ gloss.page  }}'>{{gloss.gloss}}</a>]
+                [<a href="#" data-toggle="tooltip" title='{{gloss.source}} page {{ gloss.page  }}'>{{gloss.gloss}}</a>]
                 {%endfor %}
             </td>
-            
+            <td class="literal_gloss">{{result.literal_gloss.name}}</td>
             {% if current_user.is_authenticated %}
             <td class="admin">[✎][⌫]</td>
             {% endif %}
