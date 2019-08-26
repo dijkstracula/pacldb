@@ -28,7 +28,7 @@ def table_by_name(name):
         return Term.ipa
     if name == "language":
         return Language.name
-    raise Exception("Unexpected sort order {}".format(name))
+    raise Exception("Unexpected sort column '{}'. Ignoring.".format(name))
 
 @search_blueprint.route('/', methods=['GET', 'POST'])
 def search_page():
@@ -76,7 +76,7 @@ def search_page():
     if morph_id:
         query = query.filter(Term.morph_id == morph_id);
     if orthography:
-        query = query.filter(Term.orthography.ilike(f'{orthography.strip()}'))
+        query = query.filter(Term.orthography.ilike(f'%{orthography.strip()}%'))
     if stem_form:
         query = query.filter(Term.stem_form.ilike(f'%{stem_form.strip()}%'))
     if ipa:
@@ -90,8 +90,8 @@ def search_page():
         try:
             query = query.order_by(asc(func.lower(table_by_name(sort_column))))
         except Exception as e:
-            # garbage? just ignore it.
-            pass
+            # garbage sort column? just ignore it.
+            flash(str(e), "warning")
 
     results = query.paginate(page=page, per_page=100)
     results.total = query.count() #XXX: why do I have to manually set this?
