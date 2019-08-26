@@ -14,13 +14,13 @@ def get_morphs():
     return Morph.query.order_by(Morph.name)
 
 class SearchForm(FlaskForm):
-    domain = QuerySelectField('domain', query_factory=get_domains, allow_blank=True, get_label="name")
+    domain = QuerySelectField('domain', query_factory=get_domains, allow_blank=True, get_label="name", blank_text="-any-")
     concept = StringField('concept')
-    morph_type = QuerySelectField('morph_type', query_factory=get_morphs, allow_blank=True, get_label="name")
+    morph_type = QuerySelectField('morph_type', query_factory=get_morphs, allow_blank=True, get_label="name", blank_text="-any-")
     orthography = StringField('orthography')
     stem_form = StringField('stem_form')
     ipa = StringField('ipa')
     gloss = StringField('gloss')
-    language = QuerySelectField('language', query_factory=get_langs, allow_blank=True, get_label="name")
+    language = QuerySelectField('language', query_factory=get_langs, allow_blank=True, get_label="name", blank_text="-any-")
     sort_column = HiddenField('sort_column')
     submit = SubmitField('Search')
