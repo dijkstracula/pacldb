@@ -48,10 +48,10 @@
 				  <li><label><input type="checkbox" name="ortho" checked>Orthography</input></label></li>
 				  <li><label><input type="checkbox" name="stem" checked>Stem</input></label></li>
 				  <li><label><input type="checkbox" name="ipa" checked>IPA</input></label></li>
-				  <li><label><input type="checkbox" name="morph" checked>Morph</input></label></li>
 				  <li><label><input type="checkbox" name="language" checked>Language</input></label></li>
 				  <li><label><input type="checkbox" name="glosses" checked>Source Glosses</input></label></li>
-				  <li><label><input type="checkbox" name="glosses" checked>Literal Gloss</input></label></li>
+				  <li><label><input type="checkbox" name="literal_gloss" checked>Literal Gloss</input></label></li>
+				  <li><label><input type="checkbox" name="morph" checked>Morph</input></label></li>
 				</ul>
 			</div>
 		</div>
@@ -65,10 +65,10 @@
             <th class="th-sm ortho" scope="col">Source<br/> Orthography</th>
             <th class="th-sm stem" scope="col">Stem</th>
             <th class="th-sm ipa" scope="col">IPA <small>(regex)</small></th>
-            <th class="th-sm morph" scope="col">Morph</th>
             <th class="th-sm language" scope="col">Language</th>
             <th class="th-sm glosses" scope="col">Source Glosses</th>
             <th class="th-sm literal_gloss" scope="col">Literal Gloss</th>
+            <th class="th-sm morph" scope="col">Morph</th>
             {% if current_user.is_authenticated %}
             <th class="th-sm glosses" scope="col">Admin</th>
             {% endif %}
@@ -78,37 +78,37 @@
             <tr>
                 <td class="domain"> 
                     {{ form.domain(class="form-control-sm", onchange="this.form.submit()") }}
-                    <a href= "#" class="sort-by">⇕</a>
+                    <br/><a href= "#" class="sort-by">⇕</a>
                 </td>
                 <td class="concept">
                     {{ form.concept(placeholder="search")  }}
-                    <a href= "#" class="sort-by">⇕</a>
+                    <br/><a href= "#" class="sort-by">⇕</a>
                 </td>
                 <td class="ortho">
-                    {{ form.orthography(placeholder="search")  }}
-                    <a href= "#" class="sort-by">⇕</a>
+                    {{ form.orthography(placeholder="search", size="12")  }}
+                    <br/><a href= "#" class="sort-by">⇕</a>
                 </td>
                 <td class="stem">
-                    {{ form.stem_form(placeholder="search")  }}
-                    <a href= "#" class="sort-by">⇕</a>
+                    {{ form.stem_form(placeholder="search", size="12")  }}
+                    <br/><a href= "#" class="sort-by">⇕</a>
                 </td>
                 <td class="ipa">
-                    {{ form.ipa(placeholder="search")  }}
-                    <a href= "#" class="sort-by">⇕</a>
+                    {{ form.ipa(placeholder="search", size="12")  }}
+                    <br/><a href= "#" class="sort-by">⇕</a>
+                </td>
+                <td class="language">
+                    {{ form.language(class="form-control-sm", onchange="this.form.submit()") }}
+                    <br/><a href= "#" class="sort-by">⇕</a>
+                </td>
+                <td class="glosses">
+                    {{ form.gloss(placeholder="search")  }}
+                </td>
+                <td class="literal_gloss">
+                    {{ form.literal_gloss(placeholder="search",size="12")  }}
                 </td>
                 <td class="morph">
                     {{ form.morph_type(class="form-control-sm", onchange="this.form.submit()") }}
                     <a href= "#" class="sort-by">⇕</a>
-                </td>
-                <td class="language">
-                    {{ form.language(class="form-control-sm", onchange="this.form.submit()", style="width:12") }}
-                    <a href= "#" class="sort-by">⇕</a>
-                </td>
-                <td class="glosses">
-                    {{ form.gloss(placeholder="search",size="12")  }}
-                </td>
-                <td class="literal_gloss">
-                    {{ form.literal_gloss(placeholder="search",size="12")  }}
                 </td>
             </tr>
             <input type="submit" style="display:none">
@@ -123,14 +123,14 @@
             <td class="ortho"><strong>{{result.orthography}}</strong></td>
             <td class="stem">{{result.stem_form}}</td>
             <td class="ipa">{{result.ipa}}</td>
-            <td class="morph">{{result.morph.name}}</td>
             <td class="language">{{result.language.name}}</td>
             <td class="glosses">
                 {% for gloss in result.glosses %}
-                [<a href="#" data-toggle="tooltip" title='{{gloss.source}} page {{ gloss.page  }}'>{{gloss.gloss}}</a>]
+                [<a href="#" data-toggle="tooltip" title='{{gloss.source}} page {{ gloss.page  }}'>{{gloss.gloss}}</a>]<br/>
                 {%endfor %}
             </td>
             <td class="literal_gloss">{{result.literal_gloss.name}}</td>
+            <td class="morph">{{result.morph.name}}</td>
             {% if current_user.is_authenticated %}
             <td class="admin">[✎][⌫]</td>
             {% endif %}
