@@ -132,7 +132,10 @@
             <td class="literal_gloss">{{result.literal_gloss.name}}</td>
             <td class="morph">{{result.morph.name}}</td>
             {% if current_user.is_authenticated %}
-            <td class="admin">[✎][⌫]</td>
+            <td class="admin">
+                <a class="edit" href="#">[✎]</a>
+                <a class="delete" href="#">[⌫]</a>
+            </td>
             {% endif %}
         </tr>
         {% endfor %}
