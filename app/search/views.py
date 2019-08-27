@@ -2,7 +2,7 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 
 from sqlalchemy import asc, distinct, func
 
-from app.models import Concept, Domain, Gloss, Language, Morph, Term
+from app.models import Domain, Gloss, Language, Morph, Term
 
 from . import search_blueprint
 
@@ -17,7 +17,7 @@ def table_by_name(name):
     if name == "domain":
         return Domain.name
     if name == "concept":
-        return Concept.name
+        return Term.concept
     if name == "morph":
         return Morph.name
     if name == "ortho":
@@ -66,13 +66,12 @@ def search_page():
 
     sort_column = form.sort_column.data = request.args.get('sort_column')
 
-    #query = Term.query.join(Concept).join(Language).join(Gloss).join(Domain).join(Morph).order_by(asc(func.lower(Concept.name)))
-    query = Term.query.join(Concept).join(Language).join(Gloss).join(Domain).join(Morph)
+    query = Term.query.join(Language).join(Gloss).join(Domain).join(Morph)
 
     if domain_id:
         query = query.filter(Domain.id == domain_id)
     if concept:
-        query = query.filter(Concept.name.op("~*")(f'(^|[^[:alnum:]]){concept.strip()}($|[^[:alnum:]])'))
+        query = query.filter(Term.concept.op("~*")(f'(^|[^[:alnum:]]){concept.strip()}($|[^[:alnum:]])'))
     if morph_id:
         query = query.filter(Term.morph_id == morph_id);
     if orthography:

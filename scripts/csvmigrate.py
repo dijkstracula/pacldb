@@ -73,20 +73,6 @@ class Migrator:
 
         self.db_inserts += 1
 
-    def process_concept(self, name, domain):
-        c = self.conn.cursor()
-
-        c.execute('SELECT id FROM domains WHERE name=%s', (domain,))
-        did = c.fetchone()[0]
-
-        c.execute('SELECT * FROM concepts WHERE name=%s AND domain_id=%s', (name, did))
-        if len(c.fetchall()) > 0:
-            return # Already exists.
-
-
-        c.execute('INSERT INTO concepts(name, domain_id) VALUES (%s,%s)', (name, did))
-        self.db_inserts += 1
-
     def process_term(self, ortho, stem, ipa, morph_type, cname, domain, geo):
         c = self.conn.cursor()
 
@@ -157,7 +143,6 @@ class Migrator:
         if concept and domain and ortho:
             self.process_domain(domain)
             self.process_language(lang, geo)
-            self.process_concept(concept, domain)
             self.process_morph(morph_type)
             self.process_term(ortho, stem, ipa, morph_type,concept,domain, geo)
 

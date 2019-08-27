@@ -23,17 +23,6 @@ class Language(db.Model):
     def __repr__(self):
         return str(self.id)
 
-class Concept(db.Model):
-    __tablename__ = 'concepts'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(512), nullable=False, index=True)
-
-    domain = db.relationship("Domain", lazy=True)
-    domain_id = db.Column(db.Integer, db.ForeignKey("domains.id"))
-
-    def __repr__(self):
-        return str(self.id)
-
 class Morph(db.Model):
     __tablename__ = 'morphs'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -68,11 +57,13 @@ class Term(db.Model):
     glosses = db.relationship("Gloss", backref="term", lazy=True)
     literal_gloss = db.Column(db.String(256), index=True)
 
-    concept = db.relationship("Concept", lazy=True)
-    concept_id = db.Column(db.Integer, db.ForeignKey('concepts.id'), nullable=False)
+    concept = db.Column(db.String(512), nullable=False, index=True)
 
     language = db.relationship("Language", lazy=True)
     language_id = db.Column(db.Integer, db.ForeignKey('languages.id'), nullable=False)
+
+    domain = db.relationship("Domain", lazy=True)
+    domain_id = db.Column(db.Integer, db.ForeignKey("domains.id"))
 
     def __repr__(self):
         return str(self.id)
