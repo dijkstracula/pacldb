@@ -9,17 +9,17 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-4">
+        <div class="col-3">
             Displaying results {{pagination_state.begin_cnt}} to {{pagination_state.end_cnt}} of {{results.total}}
         </div>
-        <div class="col-7">
+        <div class="col-8">
             {% set first_page = ([pagination_state.page-1,1] | sort)[-1] %}
             <nav aria-label="Page navigation">
-              <ul class="pagination justify-content-end">
+              <ul class="pagination pagination-sm justify-content-end">
                 <li class="page-item {% if not pagination_state.prev_url %}disabled{% endif %}">
                   <a class="page-link" href="{{pagination_state.prev_url}}" tabindex="-1">&laquo;</a>
                 </li>
-				  {%- for page in results.iter_pages() %}
+				  {%- for page in results.iter_pages(right_current=3) %}
 					{% if page %}
 					  {% if page != results.page %}
 						{{ render_pagination_link(page, form) }}
@@ -38,7 +38,7 @@
         </div>
 		<div class="col-1">
 			<div class="dropdown" id="column-select-checkboxes">
-				<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				<button class="btn btn-default dropdown-toggle btn-sm btn-outline-dark" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 					Cols
 					<span class="caret"></span>
 				</button>
