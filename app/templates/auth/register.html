@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% from "macros.html" import render_form_group, render_checkbox_field, render_submit_field %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Register</h1>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 border">
+            <form method="POST" class="form" role="form">
+                {{ form.hidden_tag() }}
+                {{ render_form_group(form.email) }}
+                {{ render_form_group(form.first_name) }}
+                {{ render_form_group(form.last_name) }}
+                {{ render_form_group(form.password) }}
+                {{ render_form_group(form.password2) }}
+                {{ render_submit_field(form.submit) }}
+            </form>
+        </div>
+        <div class="col-md-4">
+            <p>
+            Please complete the following fields in order
+            to register your new account.  After registration,
+            you will be able to add new data to the lexicon,
+            as well as edit and delete existing data.
+            </p>
+
+            {% if should_be_admin %}
+            <p>
+            <strong>Please take note:</strong> In addition to the
+            above permissions, you have been invited as an administrator
+            to the lexicon.  This means you will also be able to invite
+            other people to contribute, and also edit the home and about
+            pages.  With great power comes great responsibility!
+            </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 
+

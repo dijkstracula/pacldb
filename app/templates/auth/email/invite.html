@@ -1,0 +1,27 @@
+<html><head><title></title></head><body>
+        <p>
+        Greetings,
+        </p>
+
+        <p>
+        Welcome to the <b>Pan-Dene Comparative Lexicon</b>!
+        </p>
+
+        <p>
+        You have been invited to have an account.  To register, kindly follow the following link:
+        
+        {{ url_for('auth.register', token=token, _external=True) }}
+        </p>
+
+        <p>
+        This link will expire in one week.
+        </p>
+
+        <p>
+        Sincerely, The Pan-Dene Comparative Lexicon
+        </p>
+
+        <p>
+        Note: replies to this email address are not monitored.
+        </p>
+    </body></html>

@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% from "macros.html" import render_form_group, render_checkbox_field, render_submit_field %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Invite</h1>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 border">
+            <form method="POST" class="form" role="form">
+                {{ form.hidden_tag() }}
+                {{ render_form_group(form.email) }}
+                {{ render_checkbox_field(form.should_be_admin) }}
+                {{ render_submit_field(form.submit) }}
+            </form>
+        </div>
+        <div class="col-md-4">
+            Enter the new user's contact email address, and choose whether
+            their account should be marked as an administrator account (with
+            the ability to in turn invite users themselves) or not.  They will
+            receive an email allowing them to sign up for an account.
+        </div>
+    </div>
+</div>
+{% endblock %} 
+
