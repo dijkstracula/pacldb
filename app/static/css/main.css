@@ -1,3 +1,15 @@
 strong {
     color: #990033;
 }
+
+.save {
+    color: #00FF00;
+}
+
+.edit {
+    color: #999933;
+}
+
+.delete {
+    color: #FF0000;
+}
