@@ -19,45 +19,45 @@
                 <li class="page-item {% if not pagination_state.prev_url %}disabled{% endif %}">
                   <a class="page-link" href="{{pagination_state.prev_url}}" tabindex="-1">&laquo;</a>
                 </li>
-				  {%- for page in results.iter_pages(right_current=3) %}
-					{% if page %}
-					  {% if page != results.page %}
-						{{ render_pagination_link(page, form) }}
-					  {% else %}
-						<strong>{{ render_pagination_link(page, form) }}</strong>
-					  {% endif %}
-					{% else %}
-					  <span class=ellipsis>…</span>
-					{% endif %}
-				  {%- endfor %}
+                  {%- for page in results.iter_pages(right_current=3) %}
+                    {% if page %}
+                      {% if page != results.page %}
+                        {{ render_pagination_link(page, form) }}
+                      {% else %}
+                        <strong>{{ render_pagination_link(page, form) }}</strong>
+                      {% endif %}
+                    {% else %}
+                      <span class=ellipsis>…</span>
+                    {% endif %}
+                  {%- endfor %}
                 <li class="page-item {% if not pagination_state.next_url %}disabled{% endif %}">
                   <a class="page-link" href="{{pagination_state.next_url}}">&raquo;</a>
                 </li>
               </ul>
             </nav>
         </div>
-		<div class="col-1">
-			<div class="dropdown" id="column-select-checkboxes">
-				<button class="btn btn-default dropdown-toggle btn-sm btn-outline-dark" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-					Cols
-					<span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu checkbox-menu allow-focus">
-				  <li><label><input type="checkbox" name="domain" checked>Domain</input></label></li>
-				  <li><label><input type="checkbox" name="concept" checked>Concept</input></label></li>
-				  <li><label><input type="checkbox" name="ortho" checked>Orthography</input></label></li>
-				  <li><label><input type="checkbox" name="stem" checked>Stem</input></label></li>
-				  <li><label><input type="checkbox" name="ipa" checked>IPA</input></label></li>
-				  <li><label><input type="checkbox" name="language" checked>Language</input></label></li>
-				  <li><label><input type="checkbox" name="glosses" checked>Source Gloss(es)</input></label></li>
-				  <li><label><input type="checkbox" name="literal_gloss" checked>Literal Gloss</input></label></li>
-				  <li><label><input type="checkbox" name="morph" checked>Morph</input></label></li>
-				</ul>
-			</div>
-		</div>
+        <div class="col-1">
+            <div class="dropdown" id="column-select-checkboxes">
+                <button class="btn btn-default dropdown-toggle btn-sm btn-outline-dark" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    Cols
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu checkbox-menu allow-focus">
+                  <li><label><input type="checkbox" name="domain" checked>Domain</input></label></li>
+                  <li><label><input type="checkbox" name="concept" checked>Concept</input></label></li>
+                  <li><label><input type="checkbox" name="ortho" checked>Orthography</input></label></li>
+                  <li><label><input type="checkbox" name="stem" checked>Stem</input></label></li>
+                  <li><label><input type="checkbox" name="ipa" checked>IPA</input></label></li>
+                  <li><label><input type="checkbox" name="language" checked>Language</input></label></li>
+                  <li><label><input type="checkbox" name="glosses" checked>Source Gloss(es)</input></label></li>
+                  <li><label><input type="checkbox" name="literal_gloss" checked>Literal Gloss</input></label></li>
+                  <li><label><input type="checkbox" name="morph" checked>Morph</input></label></li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
-<table class="table table-bordered table-striped table-responsive table-sm" cellspacing="0">
+<table id="tbl" class="table table-bordered table-striped table-responsive table-sm" cellspacing="0">
     <thead>
         <tr>
             <th class="th-sm domain" scope="col">Domain</th>
@@ -118,6 +118,7 @@
 
         {% for result in results.items %}
         <tr>
+            <td style="display:none" class="term_id">{{result.id}}</td>
             <td class="domain">{{result.concept.domain.name}}</td>
             <td class="concept">{{result.concept.name}}</td>
             <td class="ortho"><strong>{{result.orthography}}</strong></td>
