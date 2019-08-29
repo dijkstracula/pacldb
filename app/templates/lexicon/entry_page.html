@@ -3,12 +3,51 @@
 
 {% block content %}
 
-<div class="page-header">
-    <h1>{{result.orthography}}</h1>
-</div>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-8 border">
+        <div class="col-md-8">
+            <h1>{{result.orthography}}</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <h4>{{result.concept.name}}</h4>
+        </div>
+        <div class="col-md-2 align-items-end">IPA: ({{result.ipa}})</div>
+        <div class="col-md-2 align-items-end">Morphology: ({{result.morph.name}})</div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-md-8">
+            Description<br/>
+            <textarea readonly rows="5"></textarea>
+        </div>
+        <div class="col-md-4">
+            Variants<br/>
+            <textarea readonly rows="5"></textarea>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            Glosses<br/>
+            <table class="table table-bordered table-striped table-sm" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="th-sm gloss" scope="col">Gloss</th>
+                        <th class="th-sm source" scope="col">Source</th>
+                        <th class="th-sm page" scope="col">Page</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for gloss in result.glosses %}
+                    <tr>
+                        <td class="gloss">{{gloss.gloss}}</td>
+                        <td class="source">{{gloss.source}}</td>
+                        <td class="page">{{gloss.page}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
