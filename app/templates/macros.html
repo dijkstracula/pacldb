@@ -32,7 +32,7 @@
 {%- endmacro %}
 
 
-{% macro render_pagination_link(page, form) -%}
+{% macro render_pagination_link(page, form, active=False) -%}
 {% set url= url_for('search.search_page',
     page=page,
     domain_id=form.domain.data,
@@ -43,7 +43,9 @@
     language=form.language.data,
     gloss=form.gloss.data,
     sort_column=form.sort_column.data) %}
-<li class="page-item"><a class="page-link" href="{{url}}">
+    <li class="page-item {% if active %}active{%endif%}">
+        <a class="page-link {% if active %}active{%endif%}" href="{{url}}">
 	{{page}}
-</a></li>
+        </a>
+    </li>
 {%- endmacro %}

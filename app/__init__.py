@@ -39,4 +39,7 @@ def create_app(config=Config):
     from .auth import auth_blueprint
     app.register_blueprint(auth_blueprint)
 
+    from .lexicon import lexicon_blueprint
+    app.register_blueprint(lexicon_blueprint)
+
     return app

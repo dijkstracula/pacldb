@@ -1,5 +1,6 @@
-strong {
+tbody tr .ortho a {
     color: #990033;
+    text-decoration: underline;
 }
 
 .save {

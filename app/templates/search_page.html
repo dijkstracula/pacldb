@@ -24,7 +24,7 @@
                       {% if page != results.page %}
                         {{ render_pagination_link(page, form) }}
                       {% else %}
-                        <strong>{{ render_pagination_link(page, form) }}</strong>
+                        {{ render_pagination_link(page, form, active=True) }}
                       {% endif %}
                     {% else %}
                       <span class=ellipsis>…</span>
@@ -121,7 +121,11 @@
             <td style="display:none" class="term_id">{{result.id}}</td>
             <td class="domain">{{result.concept.domain.name}}</td>
             <td class="concept">{{result.concept.name}}</td>
-            <td class="ortho"><strong>{{result.orthography}}</strong></td>
+            <td class="ortho">
+              <a href="{{url_for('lexicon.ortho_page', ortho=result.orthography)}}"
+                <strong>{{result.orthography}}</strong>
+              </a>
+            </td>
             <td class="stem">{{result.stem_form}}</td>
             <td class="ipa">{{result.ipa}}</td>
             <td class="language">{{result.language.name}}</td>
