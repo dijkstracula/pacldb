@@ -5,6 +5,15 @@ from app import db, login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
+class StaticContent(db.Model):
+    __tablename__ = 'static_content'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(256), unique=True)
+    text = db.Column(db.Text())
+
+    def __repr__(self):
+        return str(self.id)
+
 class Domain(db.Model):
     __tablename__ = 'domains'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

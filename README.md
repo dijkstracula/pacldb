@@ -72,6 +72,15 @@ Instance: /Users/ntaylor/code/pacldb/instance
 >>> ^D
 now exiting InteractiveConsole...
 ```
+
+To prepopulate the home and about pages:
+
+```
+$ python scripts/importtext.py 'postgres://localhost/pacl' \
+   'home' scripts/default_home_text.txt                    \
+   'about' scripts/default_about_text.txt
+```
+
 To copy the database to production:
 
 ```
