@@ -42,4 +42,7 @@ def create_app(config=Config):
     from .lexicon import lexicon_blueprint
     app.register_blueprint(lexicon_blueprint)
 
+    from .admin import admin_blueprint
+    app.register_blueprint(admin_blueprint)
+
     return app
