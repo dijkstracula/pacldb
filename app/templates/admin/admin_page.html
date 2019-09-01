@@ -38,6 +38,7 @@
                 <thead>
                     <tr>
                         <th class="th-sm invitation-email" scope="col">email</th>
+                        <th class="th-sm invitation-invited_at" scope="col">Invited at</th>
                         <th class="th-sm user-should_be_admin" scope="col">Admin?</th>
                         <th class="th-sm user-edit" scope="col">Edit</th>
                     </tr>
@@ -46,6 +47,7 @@
                     {% for invite in invitations %}
                     <tr>
                         <td class="invitation-email">{{invite.email}}</td>
+                        <td class="user-should_be_admin">{{invite.invited_at}}</td>
                         <td class="user-should_be_admin">{{invite.should_be_admin}}</td>
                         <td class="user-edit">
                             <a class="delete" href="#">[⌫]</a>
