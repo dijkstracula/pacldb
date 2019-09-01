@@ -13,7 +13,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 login_manager = LoginManager()
 
-from app.models import Concept, Gloss, Language, Term, User
+from app.models import Gloss, Language, Term, User
 
 def create_app(config=Config):
     # create and configure the app
