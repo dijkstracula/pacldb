@@ -20,7 +20,6 @@ adds them to the database.  The CSV must have the following columns:
 usage: csvmigrate.py <path-to-database> [<path_to_csv>.csv ...]
 """
 
-import psycopg2
 import csv
 import os
 import re
@@ -30,98 +29,122 @@ import time
 
 from collections import defaultdict
 
-concepts = defaultdict(list)
+# path hack to import app.model; I hate this
+import sys, os
+sys.path.insert(0, os.path.abspath('.'))
+
+import sqlalchemy
+from sqlalchemy import and_, or_
+from sqlalchemy.orm import sessionmaker
+from app.models import *
 
 class Migrator:
     def __init__(self, dbpath):
+        self.engine = sqlalchemy.create_engine(dbpath)
+        Session = sessionmaker(bind=self.engine)
+        self.session = Session()
 
-        self.conn = psycopg2.connect(dbpath)
         self.db_inserts = 0
         self.rows_read = 0
         self.rows_skipped = 0
 
-        c = self.conn.cursor()
-        c.execute('DELETE FROM concepts')
-        c.execute('DELETE FROM terms')
-        c.execute('DELETE FROM glosses')
-        c.execute('DELETE FROM languages')
+        self.session.query(Gloss).delete()
+        self.session.query(Term).delete()
+        self.session.query(Domain).delete()
+        self.session.query(Morph).delete()
+        self.session.query(Language).delete()
+        self.session.commit()
 
     def process_language(self, name, geocode):
-        c = self.conn.cursor()
-
-        c.execute('SELECT * FROM languages WHERE name=%s and geocode <>%s OR name<>%s and geocode=%s', (name,geocode,name,geocode))
-        res = c.fetchall()
+        #'SELECT * FROM languages WHERE name=%s and geocode <>%s OR name<>%s and geocode=%s', (name,geocode,name,geocode)
+        res = self.session.query(Language).filter(or_(
+            and_(Language.name==name, Language.geocode!=geocode),
+            and_(Language.name!=name, Language.geocode==geocode))).all()
         if len(res) > 0:
-            print("Multiple geo results ({}, {})".format(name, geocode), str(res))
-            return
+            raise Exception("Multiple geo results ({}, {})".format(name, geocode))
 
         # Use OR here because some languages don't have geocodes and vice versa
-        res = c.execute('SELECT * FROM languages WHERE name=%s or geocode=%s', (name,geocode))
-        res = c.fetchall()
+        #'SELECT * FROM languages WHERE name=%s or geocode=%s', (name,geocode)
+        res = self.session.query(Language).filter(
+            or_(Language.name==name, Language.geocode==geocode)).all()
         if len(res) > 0:
             return # Already exists.
 
-        c.execute('INSERT INTO languages(name, geocode) VALUES (%s,%s)', (name, geocode))
+        #'INSERT INTO languages(name, geocode) VALUES (%s,%s)', (name, geocode)
+        l = Language(name=name, geocode=geocode)
+        self.session.add(l)
         self.db_inserts += 1
 
     def process_domain(self, name):
-        c = self.conn.cursor()
-        c.execute('SELECT * FROM domains WHERE name=%s', (name, ))
-        if len(c.fetchall()) > 0:
+        #'SELECT * FROM domains WHERE name=%s', (name, )
+        res = self.session.query(Domain).filter_by(name=name).all()
+        if len(res) > 0:
             return # Already exists.
-        c.execute('INSERT INTO domains(name) VALUES (%s)', (name, ))
+
+        d = Domain(name=name)
+        self.session.add(d)
 
         self.db_inserts += 1
 
     def process_term(self, ortho, stem, ipa, morph_type, cname, domain, geo):
-        c = self.conn.cursor()
 
-        c.execute('SELECT id FROM concepts WHERE name=%s', (cname, ))
-        cid = c.fetchone()[0]
+        res = self.session.query(Term).filter_by(orthography=ortho).all()
+        if len(res) > 0:
+            #raise Exception("Duplicate orthography")
+            return
 
-        if geo:
-            c.execute('SELECT id FROM languages WHERE geocode=%s', (geo,))
-            lid = c.fetchone()[0]
-        else:
-            lid = ""
+        domain = self.session.query(Domain).filter_by(name=domain).first()
+        lang = self.session.query(Language).filter_by(geocode=geo).first()
+        morph = self.session.query(Morph).filter_by(name=morph_type).first()
 
-        c.execute('SELECT id FROM morphs WHERE name=%s', (morph_type,))
-        mid = c.fetchone()[0]
+        if not domain:
+            raise Exception("Missing domain")
+        if not lang:
+            raise Exception("Missing lang")
+        if not morph:
+            raise Exception("Missing morph")
 
-        c.execute('SELECT * FROM terms WHERE orthography = %s', (ortho,))
-        if len(c.fetchall()) > 0:
-            return # Already exists.
-
-        c.execute('INSERT INTO terms(orthography, stem_form, ipa, morph_id, concept_id, language_id) VALUES (%s,%s,%s,%s,%s,%s)', (ortho, stem, ipa, mid, cid, lid))
+        #'INSERT INTO terms(orthography, stem_form, ipa, morph_id, concept_id, language_id) VALUES (%s,%s,%s,%s,%s,%s)', (ortho, stem, ipa, mid, cid, lid)
+        term = Term(domain=domain,
+                    concept=cname,
+                    orthography=ortho,
+                    stem_form=stem,
+                    ipa=ipa,
+                    morph=morph,
+                    language=lang)
+        self.session.add(term)
         self.db_inserts += 1
 
 
     def process_morph(self, morph_name):
-        c = self.conn.cursor()
-        c.execute('SELECT id FROM morphs WHERE name=%s', (morph_name,))
-        if len(c.fetchall()) > 0:
-            return # Already exists.)
+        morph = self.session.query(Morph).filter_by(name=morph_name).first()
+        if morph:
+            return
 
-        c.execute('INSERT INTO morphs(name) VALUES (%s)', (morph_name,));
+        morph = Morph(name=morph_name)
+        self.session.add(morph)
         self.db_inserts += 1
 
 
     def process_gloss(self, ortho, gloss, bib_src, page):
-        c = self.conn.cursor()
-
         try:
             page = int(page)
-        except Exception as e:
+        except:
             page = 0
 
-        c.execute('SELECT id FROM terms WHERE orthography =%s', (ortho,))
-        tid = c.fetchone()[0]
-
-        c.execute('SELECT * FROM glosses WHERE gloss=%s AND source=%s AND page=%s', (gloss,bib_src, page))
-        if len(c.fetchall()) > 0:
+        #'SELECT * FROM glosses WHERE gloss=%s AND source=%s AND page=%s', (gloss,bib_src, page)
+        res = self.session.query(Gloss).filter_by(gloss=gloss, source=bib_src, page=page).all()
+        if len(res) > 0:
             return # Already exists.
 
-        c.execute('INSERT INTO glosses(gloss, source, page, term_id) VALUES (%s,%s,%s,%s)', (gloss, bib_src, page, tid))
+        #'SELECT id FROM terms WHERE orthography =%s', (ortho,)
+        term = self.session.query(Term).filter_by(orthography=ortho).first()
+        if not term:
+            raise Exception("Expected existing Term for orthography {}".format(ortho))
+
+        #'INSERT INTO glosses(gloss, source, page, term_id) VALUES (%s,%s,%s,%s)', (gloss, bib_src, page, tid)
+        g = Gloss(gloss=gloss, source=bib_src, page=page, term=term)
+        self.session.add(g)
         self.db_inserts += 1
 
 
@@ -158,7 +181,9 @@ class Migrator:
             for row in rows:
                 try:
                     self.process_row(row)
+                    self.session.commit()
                 except Exception as e:
+                    self.session.rollback()
                     print(row)
                     raise e
                 n += 1
@@ -174,13 +199,11 @@ def main():
     for fn in sys.argv[2:]:
         print("Processing " + fn + "...")
         m.process_file(fn)
-        m.conn.commit()
     e = time.time()
 
     print("All done!")
     print("Inserted {} entries in {:4.2f} seconds".format(m.db_inserts, (e-b)))
     print("Skipped {}/{} rows.".format(m.rows_skipped, m.rows_read))
-    m.conn.close()
 
 
 if __name__ == "__main__":

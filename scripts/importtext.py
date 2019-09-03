@@ -24,8 +24,6 @@ import sqlalchemy
 from sqlalchemy.orm import sessionmaker
 from app.models import StaticContent
 
-concepts = defaultdict(list)
-
 class Inserter:
     def __init__(self, dbpath):
         self.engine = sqlalchemy.create_engine(dbpath)
