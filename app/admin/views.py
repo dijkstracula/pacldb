@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for, abort
 from flask_login import login_required
 
-from app.models import User
+from app.models import *
 
 from . import admin_blueprint
 from app.decorators import admin_required

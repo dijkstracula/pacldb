@@ -5,14 +5,28 @@ from app import db, login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
+import bleach
+from markdown import markdown
+
 class StaticContent(db.Model):
     __tablename__ = 'static_content'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(256), unique=True)
     text = db.Column(db.Text())
 
+    @staticmethod
+    def on_changed_text(target, value, oldvalue, initiator):
+        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
+                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
+                        'h1', 'h2', 'h3', 'p']
+        target.text = bleach.linkify(bleach.clean(
+            markdown(value, output_format="html"),
+            tags=allowed_tags, strip=True))
+
     def __repr__(self):
         return str(self.id)
+
+db.event.listen(StaticContent.text, 'set', StaticContent.on_changed_text)
 
 class Domain(db.Model):
     __tablename__ = 'domains'

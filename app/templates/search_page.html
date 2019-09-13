@@ -76,7 +76,7 @@
         <form method="POST" class="form" role="form">
             {{ form.hidden_tag() }}
             <tr>
-                <td class="domain"> 
+                <td class="domain">
                     {{ form.domain(class="form-control-sm", onchange="this.form.submit()") }}
                     <br/><a href= "#" class="sort-by">⇕</a>
                 </td>
@@ -119,8 +119,8 @@
         {% for result in results.items %}
         <tr>
             <td style="display:none" class="term_id">{{result.id}}</td>
-            <td class="domain">{{result.concept.domain.name}}</td>
-            <td class="concept">{{result.concept.name}}</td>
+            <td class="domain">{{result.domain.name}}</td>
+            <td class="concept">{{result.concept}}</td>
             <td class="ortho">
               <a href="{{url_for('lexicon.ortho_page', ortho=result.orthography)}}"
                 <strong>{{result.orthography}}</strong>
