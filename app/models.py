@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import current_app
 from flask_login import UserMixin
-from app import db, login_manager
+from app import db, exceptions, login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
@@ -87,6 +87,26 @@ class Term(db.Model):
 
     domain = db.relationship("Domain", lazy=True)
     domain_id = db.Column(db.Integer, db.ForeignKey("domains.id"))
+
+    def to_json(self):
+        blob = {
+            "id": self.id,
+            "ortho": self.orthography,
+            "stem_fomr": self.stem_form,
+            "ipa": self.ipa,
+            "morph": self.morph,
+            "concept": self.concept,
+            "language": self.language,
+            "domain": self.domain
+        }
+        return blob
+
+    @staticmethod
+    def from_json(json_post):
+        body = json_post.get("body")
+        if not body or body == "":
+            raise ValidationError("Post doesn't have a body")
+        return Term(body=body)
 
     def __repr__(self):
         return str(self.id)
