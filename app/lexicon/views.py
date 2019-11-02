@@ -1,4 +1,5 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for, abort
+from flask import json, jsonify
 
 from app.models import Domain, Gloss, Language, Morph, Term
 
@@ -13,5 +14,11 @@ def orthography_page(tid):
     if not result:
         abort(404)
 
+    if request.content_type == 'application/json':
+        blob = result.to_json()
+        return jsonify(blob)
+
+    # TODO: Consider removing this server-side rendered page (or at least
+    # pushing it to the client side)
     return render_template('lexicon/entry_page.html', result=result)
 
