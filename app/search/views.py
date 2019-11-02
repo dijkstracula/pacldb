@@ -1,4 +1,5 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import json, jsonify
 
 from sqlalchemy import asc, distinct, func
 
@@ -124,6 +125,14 @@ def search_page():
     pagination_state['page'] = page
     pagination_state['pages'] = int((results.total / 100) + 1)
 
+    if request.content_type == 'application/json':
+        blob = {'results': [i.to_json() for i in results.items],
+                'page': page}
+        return jsonify(blob)
+
+    # TODO: the server-side rendering will probably eventually
+    # go away entirely.  We should then return a 4xx if the content-type
+    # isn't application/json.
     return render_template('search_page.html',
             form=form,
             results=results,

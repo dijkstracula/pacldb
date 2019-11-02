@@ -7,6 +7,10 @@
 
 <hr class="no-margins"/>
 
+<script type=text/javascript>
+  $EDIT_URL = '{{url_for('lexicon.orthography_page', tid="")}}'
+</script>
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-3">
@@ -122,7 +126,7 @@
             <td class="domain">{{result.domain.name}}</td>
             <td class="concept">{{result.concept}}</td>
             <td class="ortho">
-              <a href="{{url_for('lexicon.ortho_page', ortho=result.orthography)}}"
+              <a href="{{url_for('lexicon.orthography_page', tid=result.id)}}"
                 <strong>{{result.orthography}}</strong>
               </a>
             </td>

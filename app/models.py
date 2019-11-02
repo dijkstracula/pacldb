@@ -91,13 +91,13 @@ class Term(db.Model):
     def to_json(self):
         blob = {
             "id": self.id,
-            "ortho": self.orthography,
-            "stem_fomr": self.stem_form,
+            "orthography": self.orthography,
+            "stem_form": self.stem_form,
             "ipa": self.ipa,
-            "morph": self.morph,
+            "morph_id": self.morph_id,
             "concept": self.concept,
-            "language": self.language,
-            "domain": self.domain
+            "language_id": self.language_id,
+            "domain_id": self.domain_id
         }
         return blob
 

@@ -34,7 +34,7 @@ $('#tbl').on('click','.edit',function() {
 
 $('#tbl').on('click','.save',function() {
     f = function(c){
-        $(c).text($(c).find('input').val());
+        $(c).text($(c).find('input').val().trim());
     };
 
     /* reset the UI */
@@ -44,8 +44,12 @@ $('#tbl').on('click','.save',function() {
     f(rows.filter(".stem"));
     f(rows.filter(".ipa"));
 
-    /* TODO: make an ajax post */
-    alert(rows.filter(".term_id").text());
+    ortho = rows.filter(".ortho").text().trim();
+
+    $.post( $EDIT_URL + ortho)
+        .fail(function(xhr, status, error) {
+            alert(error);
+        });
 
     $(this).attr("class", "edit");
     $(this).text("[✎]");
