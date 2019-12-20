@@ -86,7 +86,7 @@ class Migrator:
 
         self.db_inserts += 1
 
-    def process_term(self, ortho, stem, ipa, morph_type, cname, domain, geo):
+    def process_term(self, ortho, stem, ipa, morph, cname, domain, geo):
 
         res = self.session.query(Term).filter_by(orthography=ortho).all()
         if len(res) > 0:
@@ -95,7 +95,7 @@ class Migrator:
 
         domain = self.session.query(Domain).filter_by(name=domain).first()
         lang = self.session.query(Language).filter_by(geocode=geo).first()
-        morph = self.session.query(Morph).filter_by(name=morph_type).first()
+        morph = self.session.query(Morph).filter_by(name=morph).first()
 
         if not domain:
             raise Exception("Missing domain")
@@ -152,7 +152,7 @@ class Migrator:
         self.rows_read += 1
 
         domain = row.get("DOMAIN")
-        morph_type = (row.get("Morphological Type: N, N-N, N-N-N, N-P, NMLZ, PRED, N-QUAL, In") or row.get("Morphological type") or "N/A").strip()
+        morph = (row.get("Morphological Type: N, N-N, N-N-N, N-P, NMLZ, PRED, N-QUAL, In") or row.get("Morphological type") or "N/A").strip()
         geo = row.get("GEO CODE")
         lang = row.get("Language").strip()
         concept = row.get("Concept").strip()
@@ -166,8 +166,8 @@ class Migrator:
         if concept and domain and ortho:
             self.process_domain(domain)
             self.process_language(lang, geo)
-            self.process_morph(morph_type)
-            self.process_term(ortho, stem, ipa, morph_type,concept,domain, geo)
+            self.process_morph(morph)
+            self.process_term(ortho, stem, ipa, morph,concept,domain, geo)
 
             for gloss in set(re.split("[,;]\s*", glosses)):
                 self.process_gloss(ortho, gloss, bib_src, pgn)

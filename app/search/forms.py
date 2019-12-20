@@ -16,7 +16,7 @@ def get_morphs():
 class SearchForm(FlaskForm):
     domain = QuerySelectField('domain', query_factory=get_domains, allow_blank=True, get_label="name", blank_text="-all-")
     concept = StringField('concept')
-    morph_type = QuerySelectField('morph_type', query_factory=get_morphs, allow_blank=True, get_label="name", blank_text="-all-")
+    morph = QuerySelectField('morph', query_factory=get_morphs, allow_blank=True, get_label="name", blank_text="-all-")
     orthography = StringField('orthography')
     stem_form = StringField('stem_form')
     ipa = StringField('ipa')
