@@ -4,26 +4,49 @@
 {% block content %}
 
 <div class="container-fluid">
-        <div class="form-row">
-        {{ render_form_group(result.id, label="id", width=1, readonly=True) }}
-        {{ render_form_group(result.last_edited_by, label="Last edited by", width=4, readonly=True) }}
-        {{ render_form_group(result.last_edited_by, label="Last modified on", width=3, readonly=True) }}
+    <div class="row">
+        <div class="col-md-8 border">
+            <form method="POST" class="form" role="form">
+                {{ result.hidden_tag() }}
+                <div class="row">
+                    {{ render_form_group(result.id, label="id", width=4, readonly=True) }}
+                    {{ render_form_group(result.last_edited_by, label="Last edited by", width=4, readonly=True) }}
+                    {{ render_form_group(result.last_edited_by, label="Last modified on", width=4, readonly=True) }}
+                </div>
+
+                {{ render_form_row(result.concept, label="Concept") }}
+                {{ render_form_row(result.orthography, label="Source orthography") }}
+                {{ render_form_row(result.stem_form, label="Stem") }}
+                {{ render_form_row(result.ipa, label="IPA") }}
+                {{ render_form_row(result.language, label="Language") }}
+                {{ render_form_row(result.literal_gloss, label="Literal gloss") }}
+                {{ render_form_row(result.morph, label="Morphology") }}
+
+                {% if current_user.is_authenticated %}
+                    {{ render_submit_field(result.submit, label="Save") }}
+                {% endif %}
+            </form>
         </div>
-
-        {{ render_form_row(result.concept, label="Concept") }}
-        {{ render_form_row(result.orthography, label="Source orthography") }}
-        {{ render_form_row(result.stem_form, label="Stem") }}
-        {{ render_form_row(result.ipa, label="IPA") }}
-        {{ render_form_row(result.language, label="Language") }}
-        {{ render_form_row(result.literal_gloss, label="Literal gloss") }}
-        {{ render_form_row(result.morph, label="Morphology") }}
-        {{ render_submit_field(result.submit, label="Save") }}
-
-    </form>
-            </table>
+        <div class="col-md-4">
+            Glosses
+            <table id="gloss_tbl" class="table table-bordered table-striped table-responsive table-sm">
+                <thead>
+                    {% if current_user.is_authenticated %}
+                        <th class="th-sm domain" scope="col">ID</th>
+                    {% endif %}
+                    <th class="th-sm domain" scope="col">Gloss</th>
+                    <th class="th-sm domain" scope="col">Source</th>
+                    <th class="th-sm domain" scope="col">Page</th>
+                    {% if current_user.is_authenticated %}
+                        <th class="th-sm domain" scope="col">Admin</th>
+                    {% endif %}
+                </thead>
                 <tbody>
-                    {% for gloss in result.glosses %}
+                    {% for gloss in glosses %}
                     <tr>
+                        {% if current_user.is_authenticated %}
+                            <td class="gloss">{{gloss.id}}</td>
+                        {% endif %}
                         <td class="gloss">{{gloss.gloss}}</td>
                         <td class="source">{{gloss.source}}</td>
                         <td class="page">{{gloss.page}}</td>
@@ -34,4 +57,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
+        {% endblock %}

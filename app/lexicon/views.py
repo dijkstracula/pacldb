@@ -11,7 +11,6 @@ from . import lexicon_blueprint
 def orthography_page(tid):
     query = Term.query.join(Language).join(Gloss).join(Domain).join(Morph)
     query = query.filter(Term.id == tid)
-
     result = query.first()
     if not result:
         abort(404)
@@ -28,8 +27,7 @@ def orthography_page(tid):
                        orthography=result.orthography,
                        stem_form = result.stem_form,
                        ipa = result.ipa,
-                       glosses = result.glosses,
                        literal_gloss = result.literal_gloss,
                        language = result.language)
-    return render_template('lexicon/entry_page.html', result=form)
+    return render_template('lexicon/entry_page.html', result=form, glosses=result.glosses)
 

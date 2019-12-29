@@ -20,7 +20,7 @@
 </div>
 {%- endmacro %}
 
-{% macro render_form_row(field, label=None, width=6) -%}
+{% macro render_form_row(field, label=None, width=10) -%}
   <div class="form-group row">
     <label for="{{field.id}}" class="col-sm-2 col-form-label">{{field.id}}</label>
     <div class="col-sm-{{width}}">
