@@ -1,43 +1,26 @@
 {% extends "layout.html" %}
-{% from "macros.html" import render_form_group, render_checkbox_field, render_submit_field %}
+{% from "macros.html" import render_form_row, render_form_group, render_submit_field %}
 
 {% block content %}
 
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-md-8">
-            <h1>{{result.orthography}}</h1>
+        <div class="form-row">
+        {{ render_form_group(result.id, label="id", width=1, readonly=True) }}
+        {{ render_form_group(result.last_edited_by, label="Last edited by", width=4, readonly=True) }}
+        {{ render_form_group(result.last_edited_by, label="Last modified on", width=3, readonly=True) }}
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            <h4>{{result.concept.name}}</h4>
-        </div>
-        <div class="col-md-2 align-items-end">IPA: /{{result.ipa}}/</div>
-        <div class="col-md-2 align-items-end">Morphology: {{result.morph.name}}</div>
-    </div>
-    <hr/>
-    <div class="row">
-        <div class="col-md-8">
-            Description<br/>
-            <textarea readonly rows="5"></textarea>
-        </div>
-        <div class="col-md-4">
-            Variants<br/>
-            <textarea readonly rows="5"></textarea>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-8">
-            Glosses<br/>
-            <table class="table table-bordered table-striped table-sm" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th class="th-sm gloss" scope="col">Gloss</th>
-                        <th class="th-sm source" scope="col">Source</th>
-                        <th class="th-sm page" scope="col">Page</th>
-                    </tr>
-                </thead>
+
+        {{ render_form_row(result.concept, label="Concept") }}
+        {{ render_form_row(result.orthography, label="Source orthography") }}
+        {{ render_form_row(result.stem_form, label="Stem") }}
+        {{ render_form_row(result.ipa, label="IPA") }}
+        {{ render_form_row(result.language, label="Language") }}
+        {{ render_form_row(result.literal_gloss, label="Literal gloss") }}
+        {{ render_form_row(result.morph, label="Morphology") }}
+        {{ render_submit_field(result.submit, label="Save") }}
+
+    </form>
+            </table>
                 <tbody>
                     {% for gloss in result.glosses %}
                     <tr>

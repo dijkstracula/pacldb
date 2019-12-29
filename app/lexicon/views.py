@@ -3,6 +3,8 @@ from flask import json, jsonify
 
 from app.models import Domain, Gloss, Language, Morph, Term
 
+from .forms import LexiconForm
+
 from . import lexicon_blueprint
 
 @lexicon_blueprint.route('/show/<tid>', methods=['GET'])
@@ -18,7 +20,16 @@ def orthography_page(tid):
         blob = result.to_json()
         return jsonify(blob)
 
-    # TODO: Consider removing this server-side rendered page (or at least
-    # pushing it to the client side)
-    return render_template('lexicon/entry_page.html', result=result)
+    form = LexiconForm(id = result.id,
+                       last_edited_by = "TODO",
+                       domain = result.domain,
+                       concept = result.concept,
+                       morph = result.morph,
+                       orthography=result.orthography,
+                       stem_form = result.stem_form,
+                       ipa = result.ipa,
+                       glosses = result.glosses,
+                       literal_gloss = result.literal_gloss,
+                       language = result.language)
+    return render_template('lexicon/entry_page.html', result=form)
 

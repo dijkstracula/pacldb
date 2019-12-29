@@ -41,7 +41,7 @@ def search_page():
             page=page,
             domain_id=form.domain.data,
             concept=form.concept.data,
-            morph_type=form.morph_type.data,
+            morph=form.morph.data,
             orthography=form.orthography.data,
             stem_form=form.stem_form.data,
             ipa=form.ipa.data,
@@ -62,8 +62,8 @@ def search_page():
     language_id = request.args.get('language')
     form.language.data = Language.query.filter(Language.id == language_id).first()
 
-    morph_id = request.args.get('morph_type')
-    form.morph_type.data = Morph.query.filter(Morph.id == morph_id).first()
+    morph_id = request.args.get('morph')
+    form.morph.data = Morph.query.filter(Morph.id == morph_id).first()
 
     sort_column = form.sort_column.data = request.args.get('sort_column')
 

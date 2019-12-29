@@ -20,9 +20,18 @@
 </div>
 {%- endmacro %}
 
-{% macro render_form_group(field, label=None) -%}
-<div class="form-group {{width}} {% if field.errors %}has-error{% endif %} {{ kwargs.pop('class_', '') }} ">
-    {{ render_field(field, label) }}
+{% macro render_form_row(field, label=None, width=6) -%}
+  <div class="form-group row">
+    <label for="{{field.id}}" class="col-sm-2 col-form-label">{{field.id}}</label>
+    <div class="col-sm-{{width}}">
+        {{ field(class_='form-control', **kwargs) }}
+    </div>
+  </div>
+{%- endmacro %}
+
+{% macro render_form_group(field, label=None, width=6) -%}
+<div class="form-group col-sm-{{width}} {% if field.errors %}has-error{% endif %} {{ kwargs.pop('class_', '') }} ">
+    {{ render_field(field, label, **kwargs) }}
 </div>
 {%- endmacro %}
 

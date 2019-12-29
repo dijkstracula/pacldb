@@ -54,6 +54,7 @@ $('#tbl').on('click','.save',function() {
     $(this).attr("class", "edit");
     $(this).text("[✎]");
 });
+
 $('#tbl').on('click','.delete',function() {
     rows = $(this).parent().siblings();
 });
