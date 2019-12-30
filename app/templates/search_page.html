@@ -126,9 +126,7 @@
             <td class="domain">{{result.domain.name}}</td>
             <td class="concept">{{result.concept}}</td>
             <td class="ortho">
-              <a href="{{url_for('lexicon.orthography_page', tid=result.id)}}"
                 <strong>{{result.orthography}}</strong>
-              </a>
             </td>
             <td class="stem">{{result.stem_form}}</td>
             <td class="ipa">{{result.ipa}}</td>
@@ -142,7 +140,9 @@
             <td class="morph">{{result.morph.name}}</td>
             {% if current_user.is_authenticated %}
             <td class="admin">
-                <a class="edit" href="#">[✎]</a>
+                <a class="edit" href="{{url_for('lexicon.orthography_page', tid=result.id)}}">
+                    [✎]
+                </a>
                 <a class="delete" href="#">[⌫]</a>
             </td>
             {% endif %}

@@ -3,6 +3,32 @@
 
 {% block content %}
 
+<!-- Modal -->
+<div class="modal fade" id="editGlossModal" tabindex="-1" role="dialog" aria-labelledby="editGlossModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editGlossModalLabel">Edit Gloss</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <form>
+                <div class="form-group">
+                    <label for="gloss" class="col-form-label">Gloss</label>
+                    <input type="text" class="form-control" id="gloss">
+                </div>
+            </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-8 border">
@@ -28,7 +54,7 @@
             </form>
         </div>
         <div class="col-md-4">
-            Glosses
+            <strong>Glosses</strong>
             <table id="gloss_tbl" class="table table-bordered table-striped table-responsive table-sm">
                 <thead>
                     {% if current_user.is_authenticated %}
@@ -45,11 +71,19 @@
                     {% for gloss in glosses %}
                     <tr>
                         {% if current_user.is_authenticated %}
-                            <td class="gloss">{{gloss.id}}</td>
+                            <td class="id">{{gloss.id}}</td>
                         {% endif %}
-                        <td class="gloss">{{gloss.gloss}}</td>
+                        <td class="gloss">
+                            <strong>{{gloss.gloss}}</strong>
+                        </td>
                         <td class="source">{{gloss.source}}</td>
                         <td class="page">{{gloss.page}}</td>
+                        {% if current_user.is_authenticated %}
+                        <td class="admin">
+                            <a class="edit" href="#">[✎]</a>
+                            <a class="delete" href="#">[⌫]</a>
+                        </td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -57,4 +91,7 @@
         </div>
     </div>
 </div>
-        {% endblock %}
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/lexicon.js') }}"></script>
+
+{% endblock %}

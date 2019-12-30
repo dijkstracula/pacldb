@@ -14,47 +14,6 @@ $(".sort-by").click(function(event) {
     $(".form").submit();
 });
 
-$('#tbl').on('click','.edit',function() {
-    f = function(c){
-        var t = $(c).text();
-        var len = 12 > t.length ? 12 : t.length;
-        $(c).html($('<input />',{'value' : t, 'size':len}).val(t));
-    };
-
-    rows = $(this).parent().siblings();
-
-    f(rows.filter(".concept"));
-    f(rows.filter(".ortho"));
-    f(rows.filter(".stem"));
-    f(rows.filter(".ipa"));
-
-    $(this).attr("class", "save");
-    $(this).text("[OK]");
-});
-
-$('#tbl').on('click','.save',function() {
-    f = function(c){
-        $(c).text($(c).find('input').val().trim());
-    };
-
-    /* reset the UI */
-    rows = $(this).parent().siblings();
-    f(rows.filter(".concept"));
-    f(rows.filter(".ortho"));
-    f(rows.filter(".stem"));
-    f(rows.filter(".ipa"));
-
-    ortho = rows.filter(".ortho").text().trim();
-
-    $.post( $EDIT_URL + ortho)
-        .fail(function(xhr, status, error) {
-            alert(error);
-        });
-
-    $(this).attr("class", "edit");
-    $(this).text("[✎]");
-});
-
 $('#tbl').on('click','.delete',function() {
     rows = $(this).parent().siblings();
 });

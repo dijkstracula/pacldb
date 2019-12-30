@@ -1,4 +1,5 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for, abort
+from flask_login import login_required
 from flask import json, jsonify
 
 from app.models import Domain, Gloss, Language, Morph, Term
@@ -7,7 +8,8 @@ from .forms import LexiconForm
 
 from . import lexicon_blueprint
 
-@lexicon_blueprint.route('/show/<tid>', methods=['GET'])
+@lexicon_blueprint.route('/<tid>', methods=['GET', 'POST'])
+@login_required
 def orthography_page(tid):
     query = Term.query.join(Language).join(Gloss).join(Domain).join(Morph)
     query = query.filter(Term.id == tid)
