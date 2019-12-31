@@ -1,9 +1,53 @@
 {% extends "layout.html" %}
 {% from "macros.html" import render_form_row, render_form_group, render_submit_field %}
 
+
 {% block content %}
 
-<!-- Modal -->
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
+<!-- Modals -->
+
+<div class="modal fade" id="newGlossModal" tabindex="-1" role="dialog" aria-labelledby="newGlossModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="newGlossModalLabel">New Gloss</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <form>
+                <div class="form-group row">
+                    <label for="gloss" class="col-sm-2 col-form-label">Gloss</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="newGlossGloss">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="source" class="col-sm-2 col-form-label">Source</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" rows="2" id="newGlossSource"></textarea>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="page" class="col-sm-2 col-form-label">Page</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="newGlossPage">
+                    </div>
+                </div>
+            </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button id="newGlossModalSubmit" type="button" class="btn btn-primary">Create new gloss</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <div class="modal fade" id="editGlossModal" tabindex="-1" role="dialog" aria-labelledby="editGlossModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -15,15 +59,30 @@
       </div>
       <div class="modal-body">
             <form>
-                <div class="form-group">
-                    <label for="gloss" class="col-form-label">Gloss</label>
-                    <input type="text" class="form-control" id="gloss">
+                <input type="hidden" id="editGlossID" name="gloss_id">
+                <div class="form-group row">
+                    <label for="gloss" class="col-sm-2 col-form-label">Gloss</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="editGlossGloss">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="source" class="col-sm-2 col-form-label">Source</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" rows="2" id="editGlossSource"></textarea>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="page" class="col-sm-2 col-form-label">Page</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="editGlossPage">
+                    </div>
                 </div>
             </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button id="editGlossModalSubmit" type="button" class="btn btn-primary">Save changes</button>
       </div>
     </div>
   </div>
@@ -54,7 +113,8 @@
             </form>
         </div>
         <div class="col-md-4">
-            <strong>Glosses</strong>
+            <strong>Glosses</strong><hr><br/>
+            <button type="button" id="newGlossBtn" class="btn btn-sm btn-outline-success" data-dismiss="modal">New Gloss</button>
             <table id="gloss_tbl" class="table table-bordered table-striped table-responsive table-sm">
                 <thead>
                     {% if current_user.is_authenticated %}

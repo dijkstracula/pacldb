@@ -42,6 +42,9 @@ def create_app(config=Config):
     from .lexicon import lexicon_blueprint
     app.register_blueprint(lexicon_blueprint)
 
+    from .gloss import gloss_blueprint
+    app.register_blueprint(gloss_blueprint)
+
     from .admin import admin_blueprint
     app.register_blueprint(admin_blueprint)
 

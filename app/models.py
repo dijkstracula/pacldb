@@ -64,6 +64,13 @@ class Gloss(db.Model):
 
     term_id = db.Column(db.Integer, db.ForeignKey('terms.id'), nullable=False, index=True)
 
+    @staticmethod
+    def from_json(json_post):
+        body = json_post.get("body")
+        if not body or body == "":
+            raise ValidationError("Post doesn't have a body")
+        return Gloss(body=body)
+
     def __repr__(self):
         return str(self.id)
 
