@@ -82,7 +82,8 @@ $('#editGlossModalSubmit').on('click', function(e) {
             location.reload();
         },
         error: function(xhr, ajaxOptions, thrownError) {
-            alert(xhr.responseText);
+            resp = JSON.parse(xhr.responseText);
+            alert(resp.message);
         }
     });
 });
