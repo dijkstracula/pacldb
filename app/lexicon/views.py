@@ -8,6 +8,14 @@ from .forms import LexiconForm
 
 from . import lexicon_blueprint
 
+@lexicon_blueprint.route('/', methods=['GET', 'POST'])
+def create_page():
+    form = LexiconForm(request.form)
+    if form.validate_on_submit():
+        pass
+
+    return render_template('lexicon/entry_page.html', result=form)
+
 @lexicon_blueprint.route('/<tid>', methods=['GET', 'POST'])
 @login_required
 def orthography_page(tid):

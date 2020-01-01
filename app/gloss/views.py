@@ -3,7 +3,7 @@ from flask_login import login_required
 from flask import json, jsonify
 
 from app import db
-from app.models import Gloss
+from app.models import Gloss, Term
 
 from .forms import GlossForm
 
@@ -20,16 +20,22 @@ def err_response(msg, status=400):
 def update_gloss(entry):
     try:
         entry.gloss = request.json.get('gloss').strip()
+        if entry.gloss == "":
+            return err_response("Missing gloss")
     except Exception:
         return err_response("Missing or invalid gloss")
 
     try:
         entry.source = request.json.get('source').strip()
+        if entry.source == "":
+            return err_response("Missing source")
     except Exception:
         return err_response("Missing or invalid citation source")
 
     try:
         entry.page = int(request.json.get('page'))
+        if entry.page < 1:
+            return err_response("Invalid page")
     except Exception:
         return err_response("Missing or invalid citation page")
 
@@ -57,8 +63,14 @@ def create_gloss():
 
     try:
         entry.term_id = request.json.get('term_id').strip()
+        tq = Term.query.filter(Term.id == entry.term_id)
+        tr = tq.first()
+        if not tr:
+            return err_response("Invalid term ID")
     except Exception:
         return err_response("Missing or invalid term ID")
+    if entry.term_id == "":
+        return err_response("Missing term ID")
 
     try:
         entry.gloss = request.json.get('gloss').strip()

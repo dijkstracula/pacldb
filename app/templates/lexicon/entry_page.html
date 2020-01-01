@@ -99,6 +99,7 @@
                     {{ render_form_group(result.last_edited_by, label="Last modified on", width=4, readonly=True) }}
                 </div>
 
+                {{ render_form_row(result.domain, label="Domain") }}
                 {{ render_form_row(result.concept, label="Concept") }}
                 {{ render_form_row(result.orthography, label="Source orthography") }}
                 {{ render_form_row(result.stem_form, label="Stem") }}
@@ -112,7 +113,7 @@
                 {% endif %}
             </form>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4" id ="gloss_pane">
             <strong>Glosses</strong><hr><br/>
             <button type="button" id="newGlossBtn" class="btn btn-sm btn-outline-success" data-dismiss="modal">New Gloss</button>
             <table id="gloss_tbl" class="table table-bordered table-striped table-responsive table-sm">

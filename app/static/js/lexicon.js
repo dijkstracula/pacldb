@@ -9,6 +9,13 @@ $.ajaxSetup({
     }
 })
 
+document.addEventListener("DOMContentLoaded", function(){
+    var term_id = $('#id').val();
+    if (term_id === "") {
+        $('#gloss_pane').hide();
+    }
+});
+
 $('#newGlossBtn').on('click', function(e) {
     var m = $('#newGlossModal');
     m.modal('show');
