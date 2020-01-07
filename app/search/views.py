@@ -29,6 +29,8 @@ def table_by_name(name):
         return Term.ipa
     if name == "language":
         return Language.name
+    if name == "literal_gloss":
+        return Term.literal_gloss
     raise Exception("Unexpected sort column '{}'. Ignoring.".format(name))
 
 @search_blueprint.route('/', methods=['GET', 'POST'])
@@ -47,6 +49,7 @@ def search_page():
             ipa=form.ipa.data,
             language=form.language.data,
             gloss=form.gloss.data,
+            literal_gloss=form.literal_gloss.data,
             sort_column=form.sort_column.data))
 
     #XXX: is there a way to auto-populate a form given the request object?
@@ -55,6 +58,7 @@ def search_page():
     stem_form = form.stem_form.data = request.args.get('stem_form')
     ipa = form.ipa.data = request.args.get('ipa')
     gloss = form.gloss.data = request.args.get('gloss')
+    literal_gloss = form.literal_gloss.data = request.args.get('literal_gloss') or ""
 
     domain_id = request.args.get('domain_id')
     form.domain.data = Domain.query.filter(Domain.id == domain_id).first()
@@ -85,6 +89,8 @@ def search_page():
         query = query.filter(Term.language_id == language_id);
     if gloss:
         query = query.filter(Gloss.gloss.ilike(f'{gloss.strip()}'))
+    if literal_gloss:
+        query = query.filter(Term.literal_gloss.ilike(f'{literal_gloss.strip()}'))
 
     if sort_column:
         try:
@@ -92,6 +98,7 @@ def search_page():
         except Exception as e:
             # garbage sort column? just ignore it.
             flash(str(e), "warning")
+            sort_column = None
 
     results = query.paginate(page=page, per_page=100)
     results.total = query.count() #XXX: why do I have to manually set this?
@@ -106,6 +113,7 @@ def search_page():
             ipa=ipa,
             language_id=language_id,
             gloss=gloss,
+            literal_gloss=literal_gloss,
             sort_column=sort_column) \
         if results.has_next else None
     pagination_state["prev_url"] = url_for('search.search_page',
@@ -116,6 +124,7 @@ def search_page():
             stem_form=stem_form,
             ipa=ipa,
             language_id=language_id,
+            literal_gloss=literal_gloss,
             gloss=gloss,
             sort_column=sort_column) \
         if results.has_prev else None
@@ -130,9 +139,6 @@ def search_page():
                 'page': page}
         return jsonify(blob)
 
-    # TODO: the server-side rendering will probably eventually
-    # go away entirely.  We should then return a 4xx if the content-type
-    # isn't application/json.
     return render_template('search_page.html',
             form=form,
             results=results,

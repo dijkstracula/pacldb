@@ -116,6 +116,7 @@
                 </td>
                 <td class="literal_gloss">
                     {{ form.literal_gloss(placeholder="search",size="12")  }}
+                    <br/><a href= "#" class="sort-by">⇕</a>
                 </td>
                 <td class="morph">
                     {{ form.morph(class="form-control-sm", onchange="this.form.submit()") }}
@@ -143,7 +144,7 @@
                 [<a href="#" data-toggle="tooltip" title='{{gloss.source}} page {{ gloss.page}}'>{{gloss.gloss}}</a>]<br/>
                 {%endfor %}
             </td>
-            <td class="literal_gloss">{{result.literal_gloss.name}}</td>
+            <td class="literal_gloss">{{result.literal_gloss or "N/A"}}</td>
             <td class="morph">{{result.morph.name}}</td>
             {% if current_user.is_authenticated %}
             <td class="admin">
