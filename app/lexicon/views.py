@@ -21,8 +21,14 @@ def update_ortho(entry, form):
 
     db.session.commit()
     flash(f"Orthography {entry.id} updated.")
+    return entry
 
 def insert_ortho(form):
+    if not form.language.data:
+        raise Exception("Missing language")
+    if not form.morph.data:
+        raise Exception("Missing morphology")
+
     entry = Term()
     entry.domain = form.domain.data
     entry.concept = form.concept.data
@@ -36,6 +42,7 @@ def insert_ortho(form):
     db.session.add(entry)
     db.session.commit()
     flash(f"Orthography {entry.id} created!")
+    return entry
 
 def delete_ortho(entry):
     db.session.delete(entry)
@@ -50,14 +57,19 @@ def delete_ortho(entry):
 def create_page():
     form = LexiconForm(request.form)
     if form.validate_on_submit():
-        insert_ortho(form)
+        try:
+            entry = insert_ortho(form)
+        except Exception as e:
+            flash(str(e), "danger")
+            return render_template('lexicon/entry_page.html', result=form)
+        return redirect(url_for('lexicon.orthography_page', tid=entry.id))
 
     return render_template('lexicon/entry_page.html', result=form)
 
 @lexicon_blueprint.route('/<tid>', methods=['GET', 'POST', 'DELETE'])
 @login_required
 def orthography_page(tid):
-    query = Term.query.join(Language).outerjoin(Gloss).join(Domain).join(Morph)
+    query = Term.query.outerjoin(Language).outerjoin(Gloss).outerjoin(Domain).outerjoin(Morph)
     query = query.filter(Term.id == tid)
     result = query.first()
     if not result:

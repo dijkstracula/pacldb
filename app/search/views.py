@@ -71,7 +71,7 @@ def search_page():
 
     sort_column = form.sort_column.data = request.args.get('sort_column')
 
-    query = Term.query.join(Language).outerjoin(Gloss).join(Domain).join(Morph)
+    query = Term.query.outerjoin(Language).outerjoin(Gloss).outerjoin(Domain).outerjoin(Morph)
 
     if domain_id:
         query = query.filter(Domain.id == domain_id)
