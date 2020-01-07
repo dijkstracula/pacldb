@@ -37,6 +37,14 @@ def insert_ortho(form):
     db.session.commit()
     flash(f"Orthography {entry.id} created!")
 
+def delete_ortho(entry):
+    db.session.delete(entry)
+    db.session.commit()
+
+    return jsonify({
+        'message': "OK"
+    })
+
 @lexicon_blueprint.route('/', methods=['GET', 'POST'])
 @login_required
 def create_page():
@@ -46,7 +54,7 @@ def create_page():
 
     return render_template('lexicon/entry_page.html', result=form)
 
-@lexicon_blueprint.route('/<tid>', methods=['GET', 'POST'])
+@lexicon_blueprint.route('/<tid>', methods=['GET', 'POST', 'DELETE'])
 @login_required
 def orthography_page(tid):
     query = Term.query.join(Language).outerjoin(Gloss).join(Domain).join(Morph)
@@ -54,10 +62,8 @@ def orthography_page(tid):
     result = query.first()
     if not result:
         abort(404)
-
-    if request.content_type == 'application/json':
-        blob = result.to_json()
-        return jsonify(blob)
+    if request.method == 'DELETE':
+        return delete_ortho(result)
 
     form = LexiconForm(id = result.id,
                        last_edited_by = "TODO",
@@ -73,6 +79,10 @@ def orthography_page(tid):
 
     if form.validate_on_submit():
         update_ortho(result, form)
+
+    if request.content_type == 'application/json':
+        blob = result.to_json()
+        return jsonify(blob)
 
     return render_template('lexicon/entry_page.html', result=form, glosses=result.glosses)
 
