@@ -84,7 +84,7 @@ class Term(db.Model):
     morph = db.relationship("Morph", lazy=True)
     morph_id = db.Column(db.Integer, db.ForeignKey("morphs.id"))
 
-    glosses = db.relationship("Gloss", backref="term", lazy=True)
+    glosses = db.relationship("Gloss", backref="term", cascade="all, delete-orphan", lazy=True)
     literal_gloss = db.Column(db.String(256), index=True)
 
     concept = db.Column(db.String(512), nullable=False, index=True)
