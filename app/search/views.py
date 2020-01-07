@@ -71,7 +71,7 @@ def search_page():
 
     sort_column = form.sort_column.data = request.args.get('sort_column')
 
-    query = Term.query.join(Language).join(Gloss).join(Domain).join(Morph)
+    query = Term.query.join(Language).outerjoin(Gloss).join(Domain).join(Morph)
 
     if domain_id:
         query = query.filter(Domain.id == domain_id)
@@ -100,6 +100,7 @@ def search_page():
             flash(str(e), "warning")
             sort_column = None
 
+    #TODO: page=min(page, query.count())?
     results = query.paginate(page=page, per_page=100)
     results.total = query.count() #XXX: why do I have to manually set this?
 
