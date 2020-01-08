@@ -24,6 +24,8 @@ def update_ortho(entry, form):
     return entry
 
 def insert_ortho(form):
+    if not form.domain.data:
+        raise Exception("Missing domain")
     if not form.language.data:
         raise Exception("Missing language")
     if not form.morph.data:

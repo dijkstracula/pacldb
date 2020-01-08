@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function(){
     var term_id = $('#id').val();
     if (term_id === "") {
         $('#gloss_pane').hide();
+        $('#delete').hide();
     }
 });
 
@@ -93,6 +94,29 @@ $('#editGlossModalSubmit').on('click', function(e) {
             alert(resp.message);
         }
     });
+});
+
+$('#delete').on('click', function(e) {
+    var id = $('#id').val();
+
+    if (!confirm("Are you sure you want to delete entry " + id + "?")) {
+        return;
+    }
+
+    var data = JSON.stringify( true )
+
+    $.ajax({
+        type: "DELETE",
+        url: "/lexicon/" + id,
+        data: data,
+        success: function(response) {
+            window.location.replace("/lexicon");
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            alert(xhr.responseText);
+        }
+    });
+
 });
 
 

@@ -108,6 +108,7 @@
 
                 {% if current_user.is_authenticated %}
                     {{ render_submit_field(result.submit, label="Save") }}
+                    <button type="button" id="delete" class="btn btn-danger" data-dismiss="modal">Delete</button>
                 {% endif %}
             </form>
         </div>
