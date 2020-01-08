@@ -36,11 +36,11 @@ def table_by_name(name):
 @search_blueprint.route('/', methods=['GET', 'POST'])
 def search_page():
     page = request.args.get('page', 1, type=int)
+
     form = SearchForm(request.form)
 
     if form.validate_on_submit():
         return redirect(url_for('search.search_page',
-            page=page,
             domain_id=form.domain.data,
             concept=form.concept.data,
             morph=form.morph.data,
@@ -101,7 +101,7 @@ def search_page():
             sort_column = None
 
     #TODO: page=min(page, query.count())?
-    results = query.paginate(page=page, per_page=100)
+    results = query.paginate(page, 100, False)
     results.total = query.count() #XXX: why do I have to manually set this?
 
     pagination_state = {}
