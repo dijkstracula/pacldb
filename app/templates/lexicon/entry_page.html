@@ -94,7 +94,7 @@
                 <div class="row">
                     {{ render_form_group(result.id, label="id", width=4, readonly=True) }}
                     {{ render_form_group(result.last_edited_by, label="Last edited by", width=4, readonly=True) }}
-                    {{ render_form_group(result.last_edited_by, label="Last modified on", width=4, readonly=True) }}
+                    {{ render_form_group(result.last_edited_on, label="Last edited on", width=4, readonly=True) }}
                 </div>
 
                 {{ render_form_row(result.domain, label="Domain") }}
@@ -106,7 +106,7 @@
                 {{ render_form_row(result.literal_gloss, label="Literal gloss") }}
                 {{ render_form_row(result.morph, label="Morphology") }}
 
-                {{ render_form_row(result.comment, label="Comment") }}
+                {{ render_form_row(result.comment, label="Morphology") }}
 
                 {% if current_user.is_authenticated %}
                     {{ render_submit_field(result.submit, label="Save") }}

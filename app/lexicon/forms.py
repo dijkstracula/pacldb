@@ -17,6 +17,7 @@ def get_morphs():
 class LexiconForm(FlaskForm):
     id = StringField('id')
     last_edited_by = StringField("last_edited_by")
+    last_edited_on = StringField("last_edited_on")
     domain = QuerySelectField('domain', query_factory=get_domains, allow_blank=True, get_label="name", blank_text="-all-")
     concept = StringField('concept')
     morph = QuerySelectField('morph', query_factory=get_morphs, allow_blank=True, get_label="name", blank_text="-all-")

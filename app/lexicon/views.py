@@ -1,5 +1,5 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for, abort
-from flask_login import login_required
+from flask_login import current_user, login_required
 from flask import json, jsonify
 
 from app import db
@@ -18,6 +18,7 @@ def update_ortho(entry, form):
     entry.ipa = form.ipa.data
     entry.literal_gloss = form.literal_gloss.data
     entry.language = form.language.data
+    entry.last_edited_by = current_user
 
     db.session.commit()
     flash(f"Orthography {entry.id} updated.")
@@ -40,6 +41,7 @@ def insert_ortho(form):
     entry.ipa = form.ipa.data
     entry.literal_gloss = form.literal_gloss.data
     entry.language = form.language.data
+    entry.last_edited_by = current_user
 
     db.session.add(entry)
     db.session.commit()
@@ -79,8 +81,10 @@ def orthography_page(tid):
     if request.method == 'DELETE':
         return delete_ortho(result)
 
+    print(result.last_edited_on)
     form = LexiconForm(id = result.id,
-                       last_edited_by = "TODO",
+                       last_edited_by = result.last_edited_by or "unknown",
+                       last_edited_on = result.last_edited_on or "unknown",
                        domain = result.domain,
                        concept = result.concept,
                        morph = result.morph,
