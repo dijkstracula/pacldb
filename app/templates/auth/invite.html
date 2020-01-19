@@ -17,12 +17,28 @@
             </form>
         </div>
         <div class="col-md-4">
-            Enter the new user's contact email address, and choose whether
-            their account should be marked as an administrator account (with
-            the ability to in turn invite users themselves) or not.  They will
-            receive an email allowing them to sign up for an account.
+            <p>
+            Enter the new user's contact email address and choose whether their
+            account should be marked as an administrator account or guest
+            editor account.  (The default kind of account is a guest editor
+            account.)
+            </p>
+            <p>
+            An <strong>administrator</strong> can add, edit, and delete all
+            entries and is allowed to invite new guest editors and
+            administrators.
+            <p>
+            A <strong>guest editor</strong> can only add new entries and edit entries that they
+            have created.  A guest editor will likely be either a linguist or
+            a native speaker.
+            </p>
+            <p>
+            The user will receive an email allowing them to sign up for an
+            account.  If they do not receive one, ensure they have checked
+            their spam folder.
+            </p>
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}
 
