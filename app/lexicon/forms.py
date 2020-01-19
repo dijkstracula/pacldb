@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import HiddenField, SelectField, StringField, SubmitField
+from wtforms import HiddenField, SelectField, StringField, SubmitField, TextAreaField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
 from app.models import Domain, Morph, Language
@@ -26,4 +26,6 @@ class LexiconForm(FlaskForm):
     gloss = StringField('gloss')
     literal_gloss = StringField('literal_gloss')
     language = QuerySelectField('language', query_factory=get_langs, allow_blank=True, get_label="name", blank_text="-all-")
+    
+    comment = TextAreaField(u'Comment')
     submit = SubmitField('Search')

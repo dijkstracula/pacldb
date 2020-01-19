@@ -95,6 +95,16 @@ class Term(db.Model):
     domain = db.relationship("Domain", lazy=True)
     domain_id = db.Column(db.Integer, db.ForeignKey("domains.id"))
 
+    last_edited_by_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    last_edited_by = db.relationship("User", foreign_keys=[last_edited_by_id])
+
+    created_by_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    created_by = db.relationship("User", foreign_keys=[created_by_id])
+
+    last_edited_on = db.Column(db.DateTime(), default=datetime.utcnow)
+
+    comment = db.Column(db.String())
+
     def to_json(self):
         blob = {
             "id": self.id,
