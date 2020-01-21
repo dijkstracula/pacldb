@@ -10,7 +10,7 @@ $.ajaxSetup({
 })
 
 document.addEventListener("DOMContentLoaded", function(){
-    var term_id = $('#id').val();
+    var term_id = $('#id').text();
     if (term_id === "") {
         $('#gloss_pane').hide();
         $('#delete').hide();
@@ -24,7 +24,7 @@ $('#newGlossBtn').on('click', function(e) {
 
 // Callbacks for gloss creating
 $('#newGlossModalSubmit').on('click', function(e) {
-    var term_id = $('#id').val();
+    var term_id = $('#id').text();
 
     var m = $('#newGlossModal');
 
@@ -97,7 +97,7 @@ $('#editGlossModalSubmit').on('click', function(e) {
 });
 
 $('#delete').on('click', function(e) {
-    var id = $('#id').val();
+    var id = $('#id').text();
 
     if (!confirm("Are you sure you want to delete entry " + id + "?")) {
         return;

@@ -16,26 +16,26 @@
         </button>
       </div>
       <div class="modal-body">
-            <form>
-                <div class="form-group row">
-                    <label for="gloss" class="col-sm-2 col-form-label">Gloss</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="newGlossGloss">
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="source" class="col-sm-2 col-form-label">Source</label>
-                    <div class="col-sm-10">
-                        <textarea class="form-control" rows="2" id="newGlossSource"></textarea>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="page" class="col-sm-2 col-form-label">Page</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="newGlossPage">
-                    </div>
-                </div>
-            </form>
+        <form>
+          <div class="form-group row">
+            <label for="gloss" class="col-sm-2 col-form-label">Gloss</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="newGlossGloss">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="source" class="col-sm-2 col-form-label">Source</label>
+            <div class="col-sm-10">
+              <textarea class="form-control" rows="2" id="newGlossSource"></textarea>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="page" class="col-sm-2 col-form-label">Page</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="newGlossPage">
+            </div>
+          </div>
+        </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -56,27 +56,27 @@
         </button>
       </div>
       <div class="modal-body">
-            <form>
-                <input type="hidden" id="editGlossID" name="gloss_id">
-                <div class="form-group row">
-                    <label for="gloss" class="col-sm-2 col-form-label">Gloss</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="editGlossGloss">
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="source" class="col-sm-2 col-form-label">Source</label>
-                    <div class="col-sm-10">
-                        <textarea class="form-control" rows="2" id="editGlossSource"></textarea>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="page" class="col-sm-2 col-form-label">Page</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="editGlossPage">
-                    </div>
-                </div>
-            </form>
+        <form>
+          <input type="hidden" id="editGlossID" name="gloss_id">
+          <div class="form-group row">
+            <label for="gloss" class="col-sm-2 col-form-label">Gloss</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="editGlossGloss">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="source" class="col-sm-2 col-form-label">Source</label>
+            <div class="col-sm-10">
+              <textarea class="form-control" rows="2" id="editGlossSource"></textarea>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="page" class="col-sm-2 col-form-label">Page</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="editGlossPage">
+            </div>
+          </div>
+        </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -86,73 +86,79 @@
   </div>
 </div>
 
-<div class="container-fluid">
+<form method="POST" class="form" role="form">
+  <div class="container-fluid">
     <div class="row">
-        <div class="col-md-8 border">
-            <form method="POST" class="form" role="form">
-                {{ result.hidden_tag() }}
-                <div class="row">
-                    {{ render_form_group(result.id, label="id", width=4, readonly=True) }}
-                    {{ render_form_group(result.last_edited_by, label="Last edited by", width=4, readonly=True) }}
-                    {{ render_form_group(result.last_edited_on, label="Last edited on", width=4, readonly=True) }}
-                </div>
+      <div class="col-md-8">
+        {{ result.hidden_tag() }}
+        <div id="id" style="display: none;">{{ result.id.data }}</div>
+        {{ render_form_row(result.domain, label="Domain") }}
+        {{ render_form_row(result.concept, label="Concept") }}
+        {{ render_form_row(result.orthography, label="Source orthography") }}
+        {{ render_form_row(result.stem_form, label="Stem") }}
+        {{ render_form_row(result.ipa, label="IPA") }}
+        {{ render_form_row(result.language, label="Language") }}
+        {{ render_form_row(result.literal_gloss, label="Literal gloss") }}
+        {{ render_form_row(result.morph, label="Morphology") }}
 
-                {{ render_form_row(result.domain, label="Domain") }}
-                {{ render_form_row(result.concept, label="Concept") }}
-                {{ render_form_row(result.orthography, label="Source orthography") }}
-                {{ render_form_row(result.stem_form, label="Stem") }}
-                {{ render_form_row(result.ipa, label="IPA") }}
-                {{ render_form_row(result.language, label="Language") }}
-                {{ render_form_row(result.literal_gloss, label="Literal gloss") }}
-                {{ render_form_row(result.morph, label="Morphology") }}
+        {{ render_form_row(result.comment, label="Morphology") }}
 
-                {{ render_form_row(result.comment, label="Morphology") }}
+        {% if current_user.is_authenticated %}
+        {{ render_submit_field(result.submit, label="Save") }}
+        <button type="button" id="delete" class="btn btn-danger" data-dismiss="modal">Delete</button>
+        {% endif %}
+      </div>
+      <div class="col-md-4" id ="gloss_pane">
 
+        <div>
+          <strong>Metadata</strong></p>
+          Entry ID: {{ result.id.data }} <br/>
+          Created by: {{ result.created_by.data }} <br/>
+          Last edited by: {{ result.last_edited_by.data }} <br/>
+          Last edited on: {{ result.last_edited_on.data }} <br/>
+        </div>
+        <hr>
+        <div>
+          <strong>Glosses</strong></p>
+          <button type="button" id="newGlossBtn" class="btn btn-sm btn-outline-success" data-dismiss="modal">New Gloss</button>
+          <table id="gloss_tbl" class="table table-bordered table-striped table-responsive table-sm">
+            <thead>
+              {% if current_user.is_authenticated %}
+              <th class="th-sm domain" scope="col">ID</th>
+              {% endif %}
+              <th class="th-sm domain" scope="col">Gloss</th>
+              <th class="th-sm domain" scope="col">Source</th>
+              <th class="th-sm domain" scope="col">Page</th>
+              {% if current_user.is_authenticated %}
+              <th class="th-sm domain" scope="col">Admin</th>
+              {% endif %}
+            </thead>
+            <tbody>
+              {% for gloss in glosses %}
+              <tr>
                 {% if current_user.is_authenticated %}
-                    {{ render_submit_field(result.submit, label="Save") }}
-                    <button type="button" id="delete" class="btn btn-danger" data-dismiss="modal">Delete</button>
+                <td class="id">{{gloss.id}}</td>
                 {% endif %}
-            </form>
+                <td class="gloss">
+                  <strong>{{gloss.gloss}}</strong>
+                </td>
+                <td class="source">{{gloss.source}}</td>
+                <td class="page">{{gloss.page}}</td>
+                {% if current_user.is_authenticated %}
+                <td class="admin">
+                  <a class="edit" href="#">[✎]</a>
+                  <a class="delete" href="#">[⌫]</a>
+                </td>
+                {% endif %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
-        <div class="col-md-4" id ="gloss_pane">
-            <strong>Glosses</strong><hr><br/>
-            <button type="button" id="newGlossBtn" class="btn btn-sm btn-outline-success" data-dismiss="modal">New Gloss</button>
-            <table id="gloss_tbl" class="table table-bordered table-striped table-responsive table-sm">
-                <thead>
-                    {% if current_user.is_authenticated %}
-                        <th class="th-sm domain" scope="col">ID</th>
-                    {% endif %}
-                    <th class="th-sm domain" scope="col">Gloss</th>
-                    <th class="th-sm domain" scope="col">Source</th>
-                    <th class="th-sm domain" scope="col">Page</th>
-                    {% if current_user.is_authenticated %}
-                        <th class="th-sm domain" scope="col">Admin</th>
-                    {% endif %}
-                </thead>
-                <tbody>
-                    {% for gloss in glosses %}
-                    <tr>
-                        {% if current_user.is_authenticated %}
-                            <td class="id">{{gloss.id}}</td>
-                        {% endif %}
-                        <td class="gloss">
-                            <strong>{{gloss.gloss}}</strong>
-                        </td>
-                        <td class="source">{{gloss.source}}</td>
-                        <td class="page">{{gloss.page}}</td>
-                        {% if current_user.is_authenticated %}
-                        <td class="admin">
-                            <a class="edit" href="#">[✎]</a>
-                            <a class="delete" href="#">[⌫]</a>
-                        </td>
-                        {% endif %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+      </div>
     </div>
-</div>
+  </div>
+</form>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/lexicon.js') }}"></script>
 

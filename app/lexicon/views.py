@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 from flask import json, jsonify
 
 from app import db
-from app.models import Domain, Gloss, Language, Morph, Term
+from app.models import Domain, Gloss, Language, Morph, Term, User
 
 from .forms import LexiconForm
 
@@ -19,6 +19,7 @@ def update_ortho(entry, form):
     entry.literal_gloss = form.literal_gloss.data
     entry.language = form.language.data
     entry.last_edited_by = current_user
+    entry.comment = form.comment.data
 
     db.session.commit()
     flash(f"Orthography {entry.id} updated.")
@@ -42,6 +43,7 @@ def insert_ortho(form):
     entry.literal_gloss = form.literal_gloss.data
     entry.language = form.language.data
     entry.last_edited_by = current_user
+    entry.comment = form.comment.data
 
     db.session.add(entry)
     db.session.commit()
@@ -81,9 +83,19 @@ def orthography_page(tid):
     if request.method == 'DELETE':
         return delete_ortho(result)
 
-    print(result.last_edited_on)
+    if not result.created_by:
+        created_by = "unknown"
+    else:
+        created_by = result.created_by.formatted()
+
+    if not result.last_edited_by:
+        edited_by = "unknown"
+    else:
+        edited_by = result.last_edited_by.formatted()
+
     form = LexiconForm(id = result.id,
-                       last_edited_by = result.last_edited_by or "unknown",
+                       created_by = created_by,
+                       last_edited_by = edited_by,
                        last_edited_on = result.last_edited_on or "unknown",
                        domain = result.domain,
                        concept = result.concept,
@@ -93,7 +105,8 @@ def orthography_page(tid):
                        stem_form = result.stem_form,
                        ipa = result.ipa,
                        literal_gloss = result.literal_gloss,
-                       language = result.language)
+                       language = result.language,
+                       comment = result.comment)
 
     if form.validate_on_submit():
         update_ortho(result, form)

@@ -16,6 +16,7 @@ def get_morphs():
 # TODO: is this any different from SearchForm? Should we merge the two?
 class LexiconForm(FlaskForm):
     id = StringField('id')
+    created_by = StringField("created_by")
     last_edited_by = StringField("last_edited_by")
     last_edited_on = StringField("last_edited_on")
     domain = QuerySelectField('domain', query_factory=get_domains, allow_blank=True, get_label="name", blank_text="-all-")
@@ -27,6 +28,6 @@ class LexiconForm(FlaskForm):
     gloss = StringField('gloss')
     literal_gloss = StringField('literal_gloss')
     language = QuerySelectField('language', query_factory=get_langs, allow_blank=True, get_label="name", blank_text="-all-")
-    
+
     comment = TextAreaField(u'Comment')
     submit = SubmitField('Search')

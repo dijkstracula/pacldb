@@ -153,6 +153,11 @@ class User(UserMixin, db.Model):
     first_name = db.Column(db.String(64))
     last_name = db.Column(db.String(64))
 
+    def formatted(self):
+        if not self.first_name and not self.last_name:
+            return self.email
+        return "{} {}".format(self.first_name, self.last_name)
+
     @property
     def password(self):
         raise AttributeError('password is not a readable attribute')
