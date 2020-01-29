@@ -10,9 +10,14 @@ from .forms import LexiconForm
 from . import lexicon_blueprint
 
 def update_ortho(entry, form):
+    morph = Morph.query.filter_by(name=form.morph.data).first()
+    if not morph:
+        morph = Morph(name=form.morph.data)
+        flash("Morphology \"{}\" created".format(morph.name), "warning")
+
     entry.domain = form.domain.data
     entry.concept = form.concept.data
-    entry.morph = form.morph.data
+    entry.morph = morph
     entry.orthography = form.orthography.data
     entry.stem_form = form.stem_form.data
     entry.ipa = form.ipa.data
@@ -33,10 +38,15 @@ def insert_ortho(form):
     if not form.morph.data:
         raise Exception("Missing morphology")
 
+    morph = Morph.query.filter_by(name=strip(form.morph.data)).first()
+    if not morph:
+        morph = Morph(name=form.morph.data)
+        flash("Morphology \"{}\" created".format(morph.name), "warning")
+
     entry = Term()
-    entry.domain = form.domain.data
-    entry.concept = form.concept.data
-    entry.morph = form.morph.data
+    entry.domain = strip(form.domain.data)
+    entry.concept = strip(form.concept.data)
+    entry.morph = morph.name
     entry.orthography = form.orthography.data
     entry.stem_form = form.stem_form.data
     entry.ipa = form.ipa.data
@@ -99,8 +109,7 @@ def orthography_page(tid):
                        last_edited_on = result.last_edited_on or "unknown",
                        domain = result.domain,
                        concept = result.concept,
-                       morph = result.morph,
-                       morph_id = result.morph,
+                       morph = result.morph.name,
                        orthography=result.orthography,
                        stem_form = result.stem_form,
                        ipa = result.ipa,
