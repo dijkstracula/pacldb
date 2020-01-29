@@ -1,7 +1,7 @@
 
 $.ajaxSetup({
     beforeSend: function(xhr, settings) {
-        var csrftoken = $('meta[name=csrf-token]').attr('content');
+        let csrftoken = $('meta[name=csrf-token]').attr('content');
         if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
             xhr.setRequestHeader("X-CSRFToken", csrftoken)
         }
@@ -10,7 +10,7 @@ $.ajaxSetup({
 })
 
 document.addEventListener("DOMContentLoaded", function(){
-    var term_id = $('#id').text();
+    let term_id = $('#id').text();
     if (term_id === "") {
         $('#gloss_pane').hide();
         $('#delete').hide();
@@ -18,21 +18,21 @@ document.addEventListener("DOMContentLoaded", function(){
 });
 
 $('#newGlossBtn').on('click', function(e) {
-    var m = $('#newGlossModal');
+    let m = $('#newGlossModal');
     m.modal('show');
 });
 
 // Callbacks for gloss creating
 $('#newGlossModalSubmit').on('click', function(e) {
-    var term_id = $('#id').text();
+    let term_id = $('#id').text();
 
-    var m = $('#newGlossModal');
+    let m = $('#newGlossModal');
 
-    var gloss = m.find('#newGlossGloss').val();
-    var source = m.find('#newGlossSource').val();
-    var page = m.find('#newGlossPage').val();
+    let gloss = m.find('#newGlossGloss').val();
+    let source = m.find('#newGlossSource').val();
+    let page = m.find('#newGlossPage').val();
 
-    var data = JSON.stringify(
+    let data = JSON.stringify(
         {"term_id": term_id, "gloss": gloss, "source": source, "page": page}
     );
 
@@ -53,14 +53,14 @@ $('#newGlossModalSubmit').on('click', function(e) {
 // Callbacks for gloss editing
 
 $('#gloss_tbl').on('click','.edit',function() {
-    var rows = $(this).parent().siblings();
+    let rows = $(this).parent().siblings();
 
-    var id = rows.filter(".id")[0].innerText;
-    var gloss = rows.filter(".gloss")[0].innerText;
-    var source = rows.filter(".source")[0].innerText;
-    var page = rows.filter(".page")[0].innerText;
+    let id = rows.filter(".id")[0].innerText;
+    let gloss = rows.filter(".gloss")[0].innerText;
+    let source = rows.filter(".source")[0].innerText;
+    let page = rows.filter(".page")[0].innerText;
 
-    var m = $('#editGlossModal');
+    let m = $('#editGlossModal');
     m.modal();
 
     m.find('#editGlossID').val(id);
@@ -70,14 +70,14 @@ $('#gloss_tbl').on('click','.edit',function() {
 });
 
 $('#editGlossModalSubmit').on('click', function(e) {
-    var m = $('#editGlossModal');
+    let m = $('#editGlossModal');
 
-    var id = m.find('#editGlossID').val();
-    var gloss = m.find('#editGlossGloss').val();
-    var source = m.find('#editGlossSource').val();
-    var page = m.find('#editGlossPage').val();
+    let id = m.find('#editGlossID').val();
+    let gloss = m.find('#editGlossGloss').val();
+    let source = m.find('#editGlossSource').val();
+    let page = m.find('#editGlossPage').val();
 
-    var data = JSON.stringify(
+    let data = JSON.stringify(
         {"id": id, "gloss": gloss, "source": source, "page": page }
     );
 
@@ -97,13 +97,13 @@ $('#editGlossModalSubmit').on('click', function(e) {
 });
 
 $('#delete').on('click', function(e) {
-    var id = $('#id').text();
+    let id = $('#id').text();
 
     if (!confirm("Are you sure you want to delete entry " + id + "?")) {
         return;
     }
 
-    var data = JSON.stringify( true )
+    let data = JSON.stringify( true )
 
     $.ajax({
         type: "DELETE",
@@ -121,15 +121,15 @@ $('#delete').on('click', function(e) {
 
 
 $('#gloss_tbl').on('click','.delete',function() {
-    var rows = $(this).parent().siblings();
+    let rows = $(this).parent().siblings();
 
-    var id = rows.filter(".id")[0].innerText;
+    let id = rows.filter(".id")[0].innerText;
 
     if (!confirm("Are you sure you want to delete this gloss?")) {
         return;
     }
 
-    var data = JSON.stringify( true )
+    let data = JSON.stringify( true )
 
     $.ajax({
         type: "DELETE",
