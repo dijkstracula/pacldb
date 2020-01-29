@@ -38,20 +38,21 @@ def insert_ortho(form):
     if not form.morph.data:
         raise Exception("Missing morphology")
 
-    morph = Morph.query.filter_by(name=strip(form.morph.data)).first()
+    morph = Morph.query.filter_by(name=form.morph.data).first()
     if not morph:
         morph = Morph(name=form.morph.data)
         flash("Morphology \"{}\" created".format(morph.name), "warning")
 
     entry = Term()
-    entry.domain = strip(form.domain.data)
-    entry.concept = strip(form.concept.data)
-    entry.morph = morph.name
+    entry.domain = form.domain.data
+    entry.concept = form.concept.data
+    entry.morph = morph
     entry.orthography = form.orthography.data
     entry.stem_form = form.stem_form.data
     entry.ipa = form.ipa.data
     entry.literal_gloss = form.literal_gloss.data
     entry.language = form.language.data
+    entry.created_by = current_user
     entry.last_edited_by = current_user
     entry.comment = form.comment.data
 

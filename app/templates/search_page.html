@@ -146,7 +146,7 @@
             </td>
             <td class="literal_gloss">{{result.literal_gloss or "N/A"}}</td>
             <td class="morph">{{result.morph.name}}</td>
-            {% if current_user.is_authenticated %}
+            {% if current_user.is_authenticated and current_user.can_edit(result): %}
             <td class="admin">
                 <a class="edit" href="{{url_for('lexicon.orthography_page', tid=result.id)}}">
                     [✎]

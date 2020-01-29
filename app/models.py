@@ -171,3 +171,10 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return str(self.id)
+
+    def can_edit(self, result):
+        if self.is_admin:
+            return True
+        if not result.created_by:
+            return False
+        return self.id == result.created_by.id
