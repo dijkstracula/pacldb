@@ -16,5 +16,6 @@ def make_shell_context():
             'Domain': Domain,
             'Morph': Morph,
             'Gloss': Gloss,
-            'Language': Language}
+            'Language': Language,
+            'StaticContent': StaticContent}
 

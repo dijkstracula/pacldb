@@ -76,9 +76,7 @@ now exiting InteractiveConsole...
 To prepopulate the home and about pages:
 
 ```
-$ python scripts/importtext.py 'postgres://localhost/pacl' \
-   'home' scripts/default_home_text.txt                    \
-   'about' scripts/default_about_text.txt
+$ python scripts/mdimport.py 'postgres://localhost/pacl' ./markdowns
 ```
 
 To copy the database to production:
