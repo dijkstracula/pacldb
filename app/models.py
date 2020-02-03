@@ -60,7 +60,7 @@ class Gloss(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     gloss = db.Column(db.String(512), nullable=False, index=True)
     source = db.Column(db.String(512), nullable=False, index=True)
-    page = db.Column(db.Integer)
+    page = db.Column(db.String(512))
 
     term_id = db.Column(db.Integer, db.ForeignKey('terms.id'), nullable=False, index=True)
 

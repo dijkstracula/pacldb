@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="container">
+	<div>
+        {{ text | safe }}
+	</div>
+
+    <hr/>
+	<div>
+        <h3>Contributors</h3>:
+        <ul>
+            {% for first, last in users %}
+            <li>{{first}} {{last}}</li>
+            {% endfor %}
+        </ul>
+	</div>
+	<div>
+        <h3>Sources cited</h3>:
+        <ul>
+            {% for source in sources %}
+            <li>{{source}}</li>
+            {% endfor %}
+        </ul>
+	</div>
+</div>
+{% endblock %}
+
