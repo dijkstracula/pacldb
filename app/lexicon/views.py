@@ -10,6 +10,8 @@ from .forms import LexiconForm
 from . import lexicon_blueprint
 
 def update_ortho(entry, form):
+    old_morph = entry.morph
+
     morph = Morph.query.filter_by(name=form.morph.data).first()
     if not morph:
         morph = Morph(name=form.morph.data)
@@ -26,7 +28,15 @@ def update_ortho(entry, form):
     entry.last_edited_by = current_user
     entry.comment = form.comment.data
 
+    if old_morph:
+        refs = Term.query.filter(Term.morph == old_morph).count()
+        if refs == 0:
+            flash("Morphology \"{}\" deleted".format(old_morph.name), "warning")
+            db.session.delete(old_morph)
+
     db.session.commit()
+
+
     flash(f"Orthography {entry.id} updated.")
     return entry
 

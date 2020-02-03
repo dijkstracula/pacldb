@@ -1,8 +1,7 @@
 {% macro render_field(field, label=None) -%}
     {% if field.type != 'HiddenField' %}
-        {% if label %}{% set label=field.label.text %}
+        {% if not label %}{% set label=field.label.text %}{% endif %}
         <label for="{{ field.id }}" class="control-label form-control-sm">{{ label|safe }}</label>
-        {% endif %}
     {% endif %}
     {{ field(class_='form-control form-control-sm', **kwargs) }}
     {% if field.errors %}
@@ -23,7 +22,7 @@
 
 {% macro render_form_row(field, label=None, width=10) -%}
   <div class="form-group row">
-    <label for="{{field.id}}" class="col-sm-2 col-form-label col-form-label-sm">{{field.id}}</label>
+    <label for="{{field.id}}" class="col-sm-2 col-form-label col-form-label-sm">{{field.label.text}}</label>
     <div class="col-sm-{{width}}">
         {{ field(class_='form-control form-control-sm', **kwargs) }}
     </div>

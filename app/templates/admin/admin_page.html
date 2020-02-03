@@ -26,11 +26,11 @@
                     <form action="{{url_for('admin.edit_user')}}", method="POST">
                     {{ user.hidden_tag() }}
                     <tr>
-                        <td class="user-id">{{render_field(user.id, id=False)}}</td>
-                        <td class="user-fname">{{render_field(user.first_name, id=False, label=None_)}}</td>
-                        <td class="user-lname">{{render_field(user.last_name, id=False, label=None)}}</td>
-                        <td class="user-email">{{render_field(user.email, id=False, label=None)}}</td>
-                        <td class="user-is_admin">{{render_field(user.is_admin, id=False, label=None)}}</td>
+                        <td class="user-id">{{user.id(id=False, size="2")}}</td>
+                        <td class="user-fname">{{user.first_name(id=False, label=None_)}}</td>
+                        <td class="user-lname">{{user.last_name(id=False, label=None)}}</td>
+                        <td class="user-email">{{user.email(id=False, label=None)}}</td>
+                        <td class="user-is_admin">{{user.is_admin(id=False, label=None)}}</td>
                         <td class="user-edit">
                             {{render_submit_field(user.submit)}}
                         </td>
