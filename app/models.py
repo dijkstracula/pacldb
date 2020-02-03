@@ -49,7 +49,7 @@ class Language(db.Model):
 class Morph(db.Model):
     __tablename__ = 'morphs'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(16), index=True, nullable=False)
+    name = db.Column(db.String(16), index=True, nullable=False, unique=True)
     description = db.Column(db.String(512))
 
     def __repr__(self):

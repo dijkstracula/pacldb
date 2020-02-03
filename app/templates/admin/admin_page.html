@@ -1,38 +1,62 @@
 {% extends "layout.html" %}
 
+{% from "macros.html" import render_field, render_submit_field %}
+
 {% block content %}
 
 <div class="page-header">
     <h1>Admin Page</h1>
 </div>
     <div class="row">
-        <div class="col-md-6">
+    <div class="col-md-9">
             <strong>Users</strong><br/>
             <table class="table table-bordered table-striped table-sm" cellspacing="0">
                 <thead>
                     <tr>
-                        <th class="th-sm user-name" scope="col">Name</th>
+                        <th class="th-sm user-id" scope="col">User ID</th>
+                        <th class="th-sm user-fname" scope="col">First Name</th>
+                        <th class="th-sm user-lname" scope="col">Last Name</th>
                         <th class="th-sm user-email" scope="col">email</th>
-                        <th class="th-sm user-is_admin" scope="col">Admin?</th>
+                        <th class="th-sm user-is_admin" scope="col">User Type</th>
                         <th class="th-sm user-edit" scope="col">Edit</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for user in users %}
+                    <form action="{{url_for('admin.edit_user')}}", method="POST">
+                    {{ user.hidden_tag() }}
                     <tr>
-                        <td class="user-name">{{user.first_name}} {{user.last_name}}</td>
-                        <td class="user-email">{{user.email}}</td>
-                        <td class="user-is_admin">{{user.is_admin}}</td>
+                        <td class="user-id">{{render_field(user.id, id=False)}}</td>
+                        <td class="user-fname">{{render_field(user.first_name, id=False, label=None_)}}</td>
+                        <td class="user-lname">{{render_field(user.last_name, id=False, label=None)}}</td>
+                        <td class="user-email">{{render_field(user.email, id=False, label=None)}}</td>
+                        <td class="user-is_admin">{{render_field(user.is_admin, id=False, label=None)}}</td>
                         <td class="user-edit">
-                            <a class="delete" href="#">[⌫]</a>
+                            {{render_submit_field(user.submit)}}
                         </td>
                     </tr>
+                    </form>
                     {% endfor %}
                 </tbody>
             </table>
-            <a href="{{url_for('auth.invite')}}">Invite new user</a>
         </div>
-        <div class="col-md-6">
+    <div class="col-md-3">
+        <strong>User management</strong></br>
+        <form action="{{url_for('auth.invite')}}">
+            <button id="newGlossModalSubmit" type="submit" class="btn btn-success btn-sm">New Invitation</button>
+        </form>
+
+        <br/>
+        <strong>Static Content (TODO)</strong></br>
+        <form action="{{url_for('auth.invite')}}">
+            <button id="newGlossModalSubmit" type="submit" class="btn btn-primary btn-sm">Edit home page</button>
+        </form>
+        <br/>
+        <form action="{{url_for('auth.invite')}}">
+            <button id="newGlossModalSubmit" type="submit" class="btn btn-primary btn-sm">Edit about page</button>
+        </form>
+    </div>
+        <div class="col-md-9">
             <strong>Invitations</strong>
             <table class="table table-bordered table-striped table-sm" cellspacing="0">
                 <thead>
