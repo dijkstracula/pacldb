@@ -33,8 +33,8 @@ def create_app(config=Config):
     from .views import main_blueprint
     app.register_blueprint(main_blueprint)
 
-    from .search import search_blueprint
-    app.register_blueprint(search_blueprint)
+    from .browse import browse_blueprint
+    app.register_blueprint(browse_blueprint)
 
     from .auth import auth_blueprint
     app.register_blueprint(auth_blueprint)

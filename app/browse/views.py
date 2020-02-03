@@ -5,7 +5,7 @@ from sqlalchemy import asc, distinct, func
 
 from app.models import Domain, Gloss, Language, Morph, Term
 
-from . import search_blueprint
+from . import browse_blueprint
 
 from .forms import SearchForm
 
@@ -33,14 +33,14 @@ def table_by_name(name):
         return Term.literal_gloss
     raise Exception("Unexpected sort column '{}'. Ignoring.".format(name))
 
-@search_blueprint.route('/', methods=['GET', 'POST'])
-def search_page():
+@browse_blueprint.route('/', methods=['GET', 'POST'])
+def browse_page():
     page = request.args.get('page', 1, type=int)
 
     form = SearchForm(request.form)
 
     if form.validate_on_submit():
-        return redirect(url_for('search.search_page',
+        return redirect(url_for('brwose.browse_page',
             domain_id=form.domain.data,
             concept=form.concept.data,
             morph=form.morph.data,
@@ -105,7 +105,7 @@ def search_page():
     results.total = query.count() #XXX: why do I have to manually set this?
 
     pagination_state = {}
-    pagination_state["next_url"] = url_for('search.search_page',
+    pagination_state["next_url"] = url_for('browse.browse_page',
             page=results.next_num,
             domain_id=domain_id,
             concept=concept,
@@ -117,7 +117,7 @@ def search_page():
             literal_gloss=literal_gloss,
             sort_column=sort_column) \
         if results.has_next else None
-    pagination_state["prev_url"] = url_for('search.search_page',
+    pagination_state["prev_url"] = url_for('browse.browse_page',
             page=results.prev_num,
             domain_id=domain_id,
             concept=concept,
@@ -140,7 +140,7 @@ def search_page():
                 'page': page}
         return jsonify(blob)
 
-    return render_template('search_page.html',
+    return render_template('browse_page.html',
             form=form,
             results=results,
             pagination_state=pagination_state)
