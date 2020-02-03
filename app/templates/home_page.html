@@ -4,19 +4,20 @@
 
 <div class="container">
 	<div class="row">
-		<div class="col-md-12">
+		<div class="col-12">
 			<div class="text-center">
-				<h2>Pan-Dene Comparative Lexicon</h2>
-				<h5>compiled by Sally Rice, Conor Snoek, and Michaela Stang</h5>
+                {{ title | safe }}
 			</div>
 		</div>
 	</div>
     <br/>
 	<div class="row">
-		<div class="col-md-12">
-			<a href="{{url_for('static', filename='images/map.jpg') }}">
-				<img class="float-right img-fluid rounded" src="{{ url_for('static', filename='images/map_thumb.jpg') }}"></img>
-			</a>
+		<div class="col-12">
+            <div class="col-12">
+                <a href="{{url_for('static', filename='images/map.jpg') }}">
+                    <img class="float-right img-fluid rounded" src="{{ url_for('static', filename='images/map_thumb.jpg') }}"></img>
+                </a>
+            </div>
 			<div class="pull-left">
                 {{ text | safe }}
 				<p> Currently serving {{ term_count }} orthographies.

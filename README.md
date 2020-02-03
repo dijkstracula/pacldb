@@ -79,10 +79,12 @@ To prepopulate the home and about pages:
 $ python scripts/mdimport.py 'postgres://localhost/pacl' ./markdowns
 ```
 
-To copy the database to production:
+The bulk loading scripts can be used to communicated directly with the
+production database (get the URL with `heroku config:get DATABASE_URL -a
+pan-dlc`, but this is significantly slower than bulk-loading locally, taking
+a DB dump, and copying the database to production:
 
 ```
-$ pgloader scripts/sqlmigrate # moves sqlite into local postgres
 $ pg_dump -Fc --no-acl --no-owner -h localhost -U ntaylor pacl > db.dump
 $ scp db.dump dijk:/srv/http/pub
 $ heroku pg:backups:restore http://pub.dijkstracula.net/db.dump postgresql-colorful-21508
