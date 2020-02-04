@@ -56,7 +56,7 @@ def browse_page():
     gloss = request.args.get('gloss')
     literal_gloss = request.args.get('literal_gloss') or ""
 
-    domain_id = request.args.get('domain_id')
+    domain_id = request.args.get('domain')
     form.domain.data = Domain.query.filter(Domain.id == domain_id).first()
 
     language_id = request.args.get('language')
