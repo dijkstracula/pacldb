@@ -53,12 +53,12 @@ def browse_page():
             sort_column=form.sort_column.data))
 
     #XXX: is there a way to auto-populate a form given the request object?
-    concept = form.concept.data = request.args.get('concept')
-    orthography = form.orthography.data = request.args.get('orthography')
-    stem_form = form.stem_form.data = request.args.get('stem_form')
-    ipa = form.ipa.data = request.args.get('ipa')
-    gloss = form.gloss.data = request.args.get('gloss')
-    literal_gloss = form.literal_gloss.data = request.args.get('literal_gloss') or ""
+    concept = request.args.get('concept')
+    orthography = request.args.get('orthography')
+    stem_form = request.args.get('stem_form')
+    ipa = request.args.get('ipa')
+    gloss = request.args.get('gloss')
+    literal_gloss = request.args.get('literal_gloss') or ""
 
     domain_id = request.args.get('domain_id')
     form.domain.data = Domain.query.filter(Domain.id == domain_id).first()
@@ -88,9 +88,9 @@ def browse_page():
     if language_id:
         query = query.filter(Term.language_id == language_id);
     if gloss:
-        query = query.filter(Gloss.gloss.ilike(f'{gloss.strip()}'))
+        query = query.filter(Gloss.gloss.ilike(f'%{gloss.strip()}%'))
     if literal_gloss:
-        query = query.filter(Term.literal_gloss.ilike(f'{literal_gloss.strip()}'))
+        query = query.filter(Term.literal_gloss.ilike(f'%{literal_gloss.strip()}%'))
 
     if sort_column:
         try:

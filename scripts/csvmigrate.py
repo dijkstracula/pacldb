@@ -128,9 +128,9 @@ class Migrator:
 
     def process_gloss(self, ortho, gloss, bib_src, page):
         try:
-            page = int(page)
+            page = page
         except:
-            page = 0
+            page = "N/A"
 
         #'SELECT * FROM glosses WHERE gloss=%s AND source=%s AND page=%s', (gloss,bib_src, page)
         res = self.session.query(Gloss).filter_by(gloss=gloss, source=bib_src, page=page).all()
