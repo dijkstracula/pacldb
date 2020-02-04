@@ -1,12 +1,39 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for, abort
 from flask_login import current_user, login_required
-
+from app import pagedown
 from app.models import *
 
-from . import admin_blueprint
 from app.decorators import admin_required
 
-from .forms import UserEditForm
+from .forms import StaticContentEditForm, UserEditForm
+
+from . import admin_blueprint
+
+@admin_blueprint.route('/edit_content/<name>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_static_content(name):
+    content = StaticContent.query.get(name)
+    if not content:
+        abort(404)
+
+    form = StaticContentEditForm()
+    if form.validate_on_submit():
+        content.body_md = form.body.data
+        db.session.commit()
+        flash(f"Content updated.")
+        return redirect(url_for('admin.edit_static_content', name=name))
+    else:
+        for field in form.errors:
+            errors = ",".join(form.errors[field])
+            msg = "Error processing {}: {}".format(field, errors)
+            flash(msg, "danger")
+
+
+    #TODO: whyyy
+    #print(pagedown.include_pagedown())
+    form.body.data = content.body_md
+    return render_template('admin/static_content_page.html', name=name, pagedown=pagedown, form=form)
 
 @admin_blueprint.route('/edit_user', methods=['POST'])
 @login_required

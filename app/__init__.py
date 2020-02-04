@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from flask_pagedown import PageDown
 from flask_login import LoginManager
 from flask_migrate import Migrate, MigrateCommand
 from flask_sqlalchemy import SQLAlchemy
@@ -12,6 +13,7 @@ csrf_protect = CSRFProtect()
 db = SQLAlchemy()
 migrate = Migrate()
 login_manager = LoginManager()
+pagedown = PageDown()
 
 from app.models import Gloss, Language, Term, User
 
@@ -29,6 +31,8 @@ def create_app(config=Config):
         migrate.init_app(app, db)
 
     csrf_protect.init_app(app)
+
+    pagedown.init_app(app)
 
     from .views import main_blueprint
     app.register_blueprint(main_blueprint)
