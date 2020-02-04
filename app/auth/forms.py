@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired, EqualTo, Length, Email
 class InviteForm(FlaskForm):
     email = StringField('Email', validators = [DataRequired(), Length(1,64), Email()])
     should_be_admin = BooleanField('Invite user as administrator')
-    submit = SubmitField('Log in')
+    submit = SubmitField('Invite')
 
 class RegistrationForm(FlaskForm):
     email = StringField('Email', validators = [DataRequired(), Length(1,64), Email()])
