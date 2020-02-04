@@ -45,7 +45,6 @@ def browse_page():
             v = request.form[k]
             if v and v != '__None' and v != '':
                 params[k] = v
-            print(k,v)
         del params['csrf_token']
 
         return redirect(url_for('browse.browse_page', **params))
