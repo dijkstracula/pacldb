@@ -68,7 +68,7 @@
         </div>
     </div>
 </div>
-<table id="tbl" class="table table-bordered table-striped table-responsive table-sm" cellspacing="0">
+<table id="tbl" class="table table-bordered table-striped table-sm" cellspacing="0" width="90px">
     <thead>
         <tr>
             <th class="th-sm domain" scope="col">Domain</th>
@@ -77,7 +77,7 @@
             <th class="th-sm stem" scope="col">Stem</th>
             <th class="th-sm ipa" scope="col">IPA <small>(regex)</small></th>
             <th class="th-sm language" scope="col">Language</th>
-            <th class="th-sm glosses" scope="col">Source Gloss(es) <small>(hover for source)</small></th>
+            <th class="th-sm glosses" scope="col">Source Gloss(es) <br/><small>(hover for source)</small></th>
             <th class="th-sm literal_gloss" scope="col">Literal Gloss</th>
             <th class="th-sm morph" scope="col">Morph</th>
             {% if current_user.is_authenticated %}
@@ -92,7 +92,7 @@
                     <br/><a href= "#" class="sort-by">⇕</a>
                 </td>
                 <td class="concept">
-                    {{ form.concept(placeholder="search")  }}
+                    {{ form.concept(placeholder="search", size="12")  }}
                     <br/><a href= "#" class="sort-by">⇕</a>
                 </td>
                 <td class="ortho">
@@ -108,8 +108,8 @@
                     <br/><a href= "#" class="sort-by">⇕</a>
                 </td>
                 <td class="language">
-                    {{ form.language(class="form-control-sm", onchange="this.form.submit()") }}
-                    <br/><a href= "#" class="sort-by">⇕</a>
+                    {{ form.language(class="form-control-sm", style="width:100%;max-width:90%;", onchange="this.form.submit()") }}
+                    <a href= "#" class="sort-by">⇕</a>
                 </td>
                 <td class="glosses">
                     {{ form.gloss(placeholder="search")  }}

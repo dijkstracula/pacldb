@@ -3,6 +3,14 @@ tbody tr strong {
     text-decoration: underline;
 }
 
+td {
+max-width: 100px;
+}
+
+select{
+    text-overflow: ellipsis;
+}
+
 .save {
     color: #00FF00;
 }

@@ -40,7 +40,7 @@ def browse_page():
     form = SearchForm(request.form)
 
     if form.validate_on_submit():
-        return redirect(url_for('brwose.browse_page',
+        return redirect(url_for('browse.browse_page',
             domain_id=form.domain.data,
             concept=form.concept.data,
             morph=form.morph.data,
