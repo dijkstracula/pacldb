@@ -40,19 +40,16 @@ def browse_page():
     form = SearchForm(request.form)
 
     if form.validate_on_submit():
-        return redirect(url_for('browse.browse_page',
-            domain_id=form.domain.data,
-            concept=form.concept.data,
-            morph=form.morph.data,
-            orthography=form.orthography.data,
-            stem_form=form.stem_form.data,
-            ipa=form.ipa.data,
-            language=form.language.data,
-            gloss=form.gloss.data,
-            literal_gloss=form.literal_gloss.data,
-            sort_column=form.sort_column.data))
+        params = {}
+        for k in request.form:
+            v = request.form[k]
+            if v and v != '__None' and v != '':
+                params[k] = v
+            print(k,v)
+        del params['csrf_token']
 
-    #XXX: is there a way to auto-populate a form given the request object?
+        return redirect(url_for('browse.browse_page', **params))
+
     concept = request.args.get('concept')
     orthography = request.args.get('orthography')
     stem_form = request.args.get('stem_form')
