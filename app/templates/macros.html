@@ -48,7 +48,7 @@
 {% macro render_pagination_link(page, form, active=False) -%}
 {% set url= url_for('browse.browse_page',
     page=page,
-    domain_id=form.domain.data,
+    domain=form.domain.data,
     concept=form.concept.data,
     orthography=form.orthography.data,
     stem_form=form.stem_form.data,

@@ -37,7 +37,7 @@ def table_by_name(name):
 def browse_page():
     page = request.args.get('page', 1, type=int)
 
-    form = SearchForm(request.form)
+    form = SearchForm()
 
     if form.validate_on_submit():
         params = {}
@@ -49,18 +49,18 @@ def browse_page():
 
         return redirect(url_for('browse.browse_page', **params))
 
-    concept = request.args.get('concept')
-    orthography = request.args.get('orthography')
-    stem_form = request.args.get('stem_form')
-    ipa = request.args.get('ipa')
-    gloss = request.args.get('gloss')
-    literal_gloss = request.args.get('literal_gloss') or ""
+    concept = form.concept.data = request.args.get('concept')
+    orthography = form.orthography.data = request.args.get('orthography')
+    stem_form = form.stem_form.data = request.args.get('stem_form')
+    ipa = form.ipa.data = request.args.get('ipa')
+    gloss = form.gloss.data = request.args.get('gloss')
+    literal_gloss = form.literal_gloss.data = request.args.get('literal_gloss')
 
-    domain_id = request.args.get('domain')
-    form.domain.data = Domain.query.filter(Domain.id == domain_id).first()
+    domain = request.args.get('domain')
+    form.domain.data = Domain.query.filter(Domain.id == domain).first()
 
-    language_id = request.args.get('language')
-    form.language.data = Language.query.filter(Language.id == language_id).first()
+    language = request.args.get('language')
+    form.language.data = Language.query.filter(Language.id == language).first()
 
     morph_id = request.args.get('morph')
     form.morph.data = Morph.query.filter(Morph.id == morph_id).first()
@@ -69,8 +69,8 @@ def browse_page():
 
     query = Term.query.outerjoin(Language).outerjoin(Gloss).outerjoin(Domain).outerjoin(Morph)
 
-    if domain_id:
-        query = query.filter(Domain.id == domain_id)
+    if domain:
+        query = query.filter(Domain.id == domain)
     if concept:
         query = query.filter(Term.concept.op("~*")(f'(^|[^[:alnum:]]){concept.strip()}($|[^[:alnum:]])'))
     if morph_id:
@@ -81,8 +81,8 @@ def browse_page():
         query = query.filter(Term.stem_form.ilike(f'%{stem_form.strip()}%'))
     if ipa:
         query = query.filter(Term.ipa.op("~*")(f'{ipa.strip()}'))
-    if language_id:
-        query = query.filter(Term.language_id == language_id);
+    if language:
+        query = query.filter(Term.language_id == language);
     if gloss:
         query = query.filter(Gloss.gloss.ilike(f'%{gloss.strip()}%'))
     if literal_gloss:
@@ -103,24 +103,24 @@ def browse_page():
     pagination_state = {}
     pagination_state["next_url"] = url_for('browse.browse_page',
             page=results.next_num,
-            domain_id=domain_id,
+            domain=domain,
             concept=concept,
             orthography=orthography,
             stem_form=stem_form,
             ipa=ipa,
-            language_id=language_id,
+            language=language,
             gloss=gloss,
             literal_gloss=literal_gloss,
             sort_column=sort_column) \
         if results.has_next else None
     pagination_state["prev_url"] = url_for('browse.browse_page',
             page=results.prev_num,
-            domain_id=domain_id,
+            domain=domain,
             concept=concept,
             orthography=orthography,
             stem_form=stem_form,
             ipa=ipa,
-            language_id=language_id,
+            language=language,
             literal_gloss=literal_gloss,
             gloss=gloss,
             sort_column=sort_column) \
