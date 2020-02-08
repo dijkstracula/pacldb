@@ -42,6 +42,7 @@ class Language(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(256), unique=True)
     geocode = db.Column(db.String(8), unique=True)
+    isocode = db.Column(db.String(8), unique=True)
 
     def __repr__(self):
         return str(self.id)
