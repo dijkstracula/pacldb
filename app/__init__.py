@@ -10,7 +10,7 @@ from flask_wtf.csrf import CSRFProtect
 from config import Config
 
 csrf_protect = CSRFProtect()
-db = SQLAlchemy()
+db = SQLAlchemy(engine_options={"pool_pre_ping":True, "pool_recycle":1200})
 migrate = Migrate()
 login_manager = LoginManager()
 pagedown = PageDown()
