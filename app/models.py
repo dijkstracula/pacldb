@@ -44,8 +44,22 @@ class Language(db.Model):
     geocode = db.Column(db.String(8), unique=True)
     isocode = db.Column(db.String(8), unique=True)
 
+    concordance_md = db.Column(db.Text())
+    concordnace_html = db.Column(db.Text())
+
+    @staticmethod
+    def on_changed_concordance(target, value, oldvalue, initiator):
+        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
+                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
+                        'h1', 'h2', 'h3', 'p']
+        target.body_html = bleach.linkify(bleach.clean(
+            markdown(value, output_format="html"),
+            tags=allowed_tags, strip=True))
+
     def __repr__(self):
         return str(self.id)
+
+db.event.listen(Language.concordance_md, 'set', Language.on_changed_concordance)
 
 class Morph(db.Model):
     __tablename__ = 'morphs'
