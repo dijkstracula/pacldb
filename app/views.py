@@ -25,3 +25,9 @@ def about_page():
 
     return render_template('about_page.html', text=text, sources=sources, users=users)
 
+@main_blueprint.route('/tutorial')
+def tutorial_page():
+    text = StaticContent.query.get("tutorial").body_html
+
+    return render_template('tutorial_page.html', text=text)
+

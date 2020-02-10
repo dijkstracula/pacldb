@@ -188,32 +188,6 @@
                 </ul>
             </nav>
         </div>
-        <div class="col-1">
-            {% if current_user.is_authenticated %}
-            <form action="{{url_for('lexicon.create_page')}}">
-                <button id="newGlossModalSubmit" type="submit" class="btn btn-outline-success btn-sm">New</button>
-            </form>
-            {% endif %}
-        </div>
-        <div class="col-1">
-            <div class="dropdown" id="column-select-checkboxes">
-                <button class="btn btn-default dropdown-toggle btn-sm btn-outline-dark" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    Cols
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu checkbox-menu allow-focus">
-                    <li><label><input type="checkbox" name="domain" checked>Domain</input></label></li>
-                    <li><label><input type="checkbox" name="concept" checked>Concept</input></label></li>
-                    <li><label><input type="checkbox" name="ortho" checked>Orthography</input></label></li>
-                    <li><label><input type="checkbox" name="stem" checked>Stem</input></label></li>
-                    <li><label><input type="checkbox" name="ipa" checked>IPA</input></label></li>
-                    <li><label><input type="checkbox" name="language" checked>Language</input></label></li>
-                    <li><label><input type="checkbox" name="glosses" checked>Source Gloss(es)</input></label></li>
-                    <li><label><input type="checkbox" name="literal_gloss" checked>Literal Gloss</input></label></li>
-                    <li><label><input type="checkbox" name="morph" checked>Morph</input></label></li>
-                </ul>
-            </div>
-        </div>
     </div>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/search.js') }}"></script>
