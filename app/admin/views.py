@@ -81,4 +81,5 @@ def admin_page():
         )
         users.append(f)
     invitations = Invitation.query.all()
-    return render_template('admin/admin_page.html', users=users, invitations=invitations)
+    statics = StaticContent.query.order_by(StaticContent.name).all()
+    return render_template('admin/admin_page.html', users=users, invitations=invitations, statics=statics)
