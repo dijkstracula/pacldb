@@ -8,6 +8,28 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 import bleach
 from markdown import markdown
 
+
+ALLOWED_TAGS = [
+    'h1','h2','h3','h4','h5','h6',
+    'p','dl','dt','dd','ul','ol','li',
+    'table', 'thead', 'th', 'tr','td', 'tbody',
+    'b','i','strong','em','tt',
+    'span','div','blockquote','code','pre',
+    'hr','br',
+    'a','img',
+    'abbr',
+    'acronym',
+    'br',
+]
+
+ALLOWED_ATTRIBUTES = {
+    '*': ['class', 'id'],
+    'a': ['href', 'title'],
+    'abbr': ['title'],
+    'acronym': ['title'],
+    'img': ['src', 'alt'],
+}
+
 class StaticContent(db.Model):
     __tablename__ = 'static_content'
     name = db.Column(db.String(256), primary_key=True, unique=True)
@@ -16,12 +38,10 @@ class StaticContent(db.Model):
 
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
-        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
-                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
-                        'h1', 'h2', 'h3', 'h4', 'p', 'img']
         target.body_html = bleach.linkify(bleach.clean(
             markdown(value, output_format="html"),
-            tags=allowed_tags, strip=True))
+            tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRIBUTES,
+            strip=True))
 
     def __repr__(self):
         return self.name
@@ -49,12 +69,10 @@ class Language(db.Model):
 
     @staticmethod
     def on_changed_concordance(target, value, oldvalue, initiator):
-        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
-                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
-                        'h1', 'h2', 'h3', 'h4', 'p', 'img']
         target.body_html = bleach.linkify(bleach.clean(
             markdown(value, output_format="html"),
-            tags=allowed_tags, strip=True))
+            tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRIBUTES,
+            strip=True))
 
     def __repr__(self):
         return str(self.id)
