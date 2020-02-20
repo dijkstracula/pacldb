@@ -38,6 +38,9 @@ $ pip install -r requirements.txt --global-option=build_ext --global-option="-I/
 
 ### Initializing a fresh database
 
+Use only if you're okay with throwing away the DB (because, for example,
+you're going to reload it from CSV immediately):
+
 ```
 (venv) $ flask db init
 (venv) $ flask db migrate -m 'initial schema'
@@ -45,8 +48,6 @@ $ pip install -r requirements.txt --global-option=build_ext --global-option="-I/
 
 ### Manually resetting the database from CSV
 
-Use only if you're okay with throwing away the DB (because, for example,
-you're going to reload it from CSV immediately):
 
 ```
 (venv) $ echo 'drop database pacl' | psql
@@ -79,21 +80,10 @@ To prepopulate the home and about pages:
 $ python scripts/mdimport.py 'postgres://localhost/pacl' ./markdowns
 ```
 
-The bulk loading scripts can be used to communicated directly with the
-production database (get the URL with `heroku config:get DATABASE_URL -a
-pan-dlc`, but this is significantly slower than bulk-loading locally, taking
-a DB dump, and copying the database to production:
-
-```
-$ pg_dump -Fc --no-acl --no-owner -h localhost -U ntaylor pacl > db.dump
-$ scp db.dump dijk:/srv/http/pub
-$ heroku pg:backups:restore http://pub.dijkstracula.net/db.dump postgresql-colorful-21508
-$ heroku ps:restart
-```
-
 ## Running locally 
 
 PACL runs either with the stock Flask server...
+
 ```
 $ export FLASK_APP=app
 $ export FLASK_ENV=development
@@ -108,21 +98,51 @@ $ gunicorn run # default port 8000
 For account invite functionality, you'll need a local Sendgrid API key
 exported.
 
-## DB migration to production
+## Production
 
+To open a remote shell:
+
+```
+$ DATABASE_URL=$(heroku config:get DATABASE_URL -a pan-dlc) flask shell
+```
+
+To make and download a db snapshot:
+
+```
+$ heroku pg:backups:capture --app pan-dlc
+$ heroku pg:backups:download
+```
+
+### DB migrations
+
+```
+$ vim app/models.py
+$ git add app/models.py
+$ git commit -am 'your db migration description'
+
+$ flask db migrate -m 'your db migration description'
+$ less migrations/versions/deadbeeffoodcafe_migration_file.py
+$ git add migrations
+
+$ flask db upgrade # only for your local DB
+$ git push
+$ git push heroku master
+```
 
 ## Deployment 
 
 Deploying new code:
+
 ```
 $ git push heroku master
 ```
 
 ## Monitoring 
 
-TODO
+- [Heroku dashboard](https://dashboard.heroku.com/apps/pan-dlc)
+- [Heroku metrics](https://dashboard.heroku.com/apps/pan-dlc/metrics/web)
 
-## Citations 
+## Useful links
 
 - [The Flask Mega-Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world)
 - [Flask Web Development (2nd ed)](https://www.oreilly.com/library/view/flask-web-development/9781491991725/)
