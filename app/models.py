@@ -110,7 +110,7 @@ class Gloss(db.Model):
 class Term(db.Model):
     __tablename__ = 'terms'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    orthography = db.Column(db.String(256), nullable=False, index=True, unique=True)
+    orthography = db.Column(db.String(256), nullable=False, index=True)
     stem_form = db.Column(db.String(256), nullable=False, index=True)
     ipa = db.Column(db.String(256), nullable=False, index=True)
 
