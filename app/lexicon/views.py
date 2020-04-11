@@ -72,11 +72,22 @@ def insert_ortho(form):
     return entry
 
 def delete_ortho(entry):
+    msg = f"Entry {entry.orthography} deleted"
+
+    old_morph = entry.morph
+
     db.session.delete(entry)
+
+    if old_morph:
+        refs = Term.query.filter(Term.morph == old_morph).count()
+        if refs == 0:
+            msg += f"; morphology {old_morph.name} deleted"
+            db.session.delete(old_morph)
+
     db.session.commit()
 
     return jsonify({
-        'message': "OK"
+        'message': msg
     })
 
 @lexicon_blueprint.route('/', methods=['GET', 'POST'])
